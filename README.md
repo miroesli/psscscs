@@ -53,13 +53,25 @@ Visit
 [https://github.com/BattlesnakeOfficial/engine](https://github.com/BattlesnakeOfficial/engine)
 for installing the engine to run the AI.
 
-If you have problems running the engine, try building the engine executable
-locally within the cloned engine directory.
+If you have problems running the engine, make sure you have run make install
 
 ```bash
 make install
+```
+
+and built the board
+
+```bash
+./build_board.sh
+```
+
+If both `./engine dev` and `engine dev` still do not work, build the engine executable locally
+
+```
 go build -o engine cmd/engine/main.go
 ```
+
+Then try running `./engine dev`
 
 ## Deploying to Heroku
 
