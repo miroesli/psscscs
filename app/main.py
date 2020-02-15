@@ -45,9 +45,13 @@ def start():
     """
     print(json.dumps(data))
 
-    color = "#00FF00"
+    # See https://docs.battlesnake.com/snake-customization for customization options
 
-    return start_response(color)
+    color = '#00FFFF'
+    headType = 'bwc-scarf'
+    tailType = 'freckled'
+
+    return start_response(color, headType, tailType)
 
 
 @bottle.post('/move')
