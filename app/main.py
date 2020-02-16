@@ -3,7 +3,7 @@ import os
 import random
 import bottle
 
-from api import ping_response, start_response, move_response, end_response
+from .api import ping_response, start_response, move_response, end_response
 
 
 @bottle.route('/')
@@ -45,7 +45,7 @@ def start():
     """
     print(json.dumps(data))
 
-    # See https://docs.battlesnake.com/snake-customization for customization options
+    # See https://docs.battlesnake.com/snake-customization for customizations
 
     color = '#00FFFF'
     headType = 'bwc-scarf'
