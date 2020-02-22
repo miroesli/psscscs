@@ -32,7 +32,14 @@ git clone https://github.com/miroesli/pssscs.git
 ```
 
 1. Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
-
+  
+```bash
+python3 -m venv envs  
+```  
+```bash  
+source envs/bin/activate  
+```  
+  
 ```bash
 pip install -r requirements.txt
 ```
@@ -40,7 +47,7 @@ pip install -r requirements.txt
 4. Run local server:
 
 ```bash
-python app/main.py
+python -m app.main
 ```
 
 5. Test your snake by sending a curl to the running snake
