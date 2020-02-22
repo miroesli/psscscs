@@ -4,3 +4,6 @@ battlesnake
 .idea
 .vscode
 engine
+envs/
+.pyc
+__pycache__/
