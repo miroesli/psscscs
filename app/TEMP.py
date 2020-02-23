@@ -12,8 +12,8 @@ it is not very good to go with the opposite.
 The direction of the body matters in some cases, but it makes no sense to say, for example,
 verticle is 1 and horizontal is 2, since you should not argue that verticle is a lower value.
 Additionally, I highly doubt the Artificial I is going to figure out the length thing by itself.
-That said, I am using a special trick, the value of a body block is equal to its distance to the tail,
-so the head value will be the length of the snake. With this representation, one can recover the snakes
+That said, I am using a special trick, the value of a body block is equal to its (scaled) distance to the tail,
+so the head value will be the (scaled) length of the snake. With this representation, one can recover the snakes
 nearly perfectly (there are degenerate cases but you can prove that they don't make a difference essentially).
 
 I mean it makes sense. The tail is safer than the head, so it will have low values.
@@ -35,13 +35,14 @@ I also have a plan to make the board more continuous, so the values change step 
 I am going to ask Nishant cuz I think he once told us it is better to keep the values in the interval [0, 1].
 """
 
-FOOD_factor = 1
-BODY_factor = 1
-HEAD_factor = 1
-MYBODY_factor = 1
-MY
-EMPTY = 0
-WALL = 1000
+EMPTY = 0.5
+WALL = 1.0
+MYHEAD = -1.0
+# adders & mutipliers
+# (value + value_a) * value_m
+HUNGER_a = -100
+HUNGER_m = 0.005
+SNAKE_m = 0.01
 
 def interpret(data):
     """ Preprocess the data
@@ -55,28 +56,60 @@ def interpret(data):
         grid: A grid that represents the game
     
     """
-
-##    # gotta do the math to recenter the grid, fuck it's 2 in the morning. I will figure it out tomorrow
-##    grid = [[EMPTY] * data['board']['height'] for row in range(data['board']['width'])]
-##    
-##    for food in data['board']['food']:
-##        # I suppose a food is more wanted than an enmpty cell so let EMPTY be the base value
-##        grid[food[0]][food[1]] -= data['you']['health'] * FOOD_factor
-##    
-##    for snake in data['board']['snakes']:
-##        body = snake['body']
-##        # get head
-##        grid[body[0][0]][body[0][1]] = HEAD
-##        # get the rest of the body
-##        # Don't do the body[1:] slicing. It will copy the list
-##        for i in range(1, len(body)):
-##            grid[body[i][0]][body[i][1]] = BODY
-##
-##    body = data['you']['body']
-##    # get head
-##    grid[body[0][0]][body[0][1]] = MYHEAD
-##    # get the rest of the body
-##    for i in range(1, len(body)):
-##        grid[body[i][0]][body[i][1]] = MYBODY
-##    
-##    return grid
+    
+    # gotta do the math to recenter the grid
+    width = (data['board']['width'] + 1) * 2 - 1
+    height = (data['board']['height'] + 1) * 2 - 1
+    grid = [[WALL] * width for row in range(height)]
+    center = (width//2, height//2)
+    # the original game board
+    # it's easier to work on the original board then transfer it onto the grid
+    board = [[EMPTY] * data['board']['width'] for row in range(data['board']['height'])]
+    
+    # positions are (y, x) not (x, y)
+    # because you read the grid row by row, i.e. (row number, column number)
+    # otherwise the board is transposed
+    for food in data['board']['food']:
+        # I suppose a food is more wanted than an enmpty cell so let EMPTY be the base value
+        board[food['y']][food['x']] += (data['you']['health'] + HUNGER_a) * HUNGER_m
+    
+    my_length = len(data['you']['body'])
+    for snake in data['board']['snakes']:
+        body = snake['body']
+        # get head
+        board[body[0]['y']][body[0]['x']] = EMPTY + (len(body) - (my_length - 1)) * SNAKE_m
+        # get the rest of the body
+        dist = len(body)
+        # Don't do the body[1:] slicing. It will copy the list
+        for i in range(1, len(body)):
+            board[body[i]['y']][body[i]['x']] = EMPTY + dist * SNAKE_m
+            dist -= 1
+    
+    body = data['you']['body']
+    # get head
+    board[body[0]['y']][body[0]['x']] = MYHEAD
+    # get the rest of the body
+    dist = my_length
+    for i in range(1, len(body)):
+        board[body[i]['y']][body[i]['x']] = EMPTY + dist * SNAKE_m
+        dist -= 1
+    
+    if data['you']['name'] == 'test_board' or data['you']['name'] == 'test':
+        print()
+        for row in board:
+            print(row)
+        print()
+    
+    # from this point, all positions are measured relative to our head
+    origin = data['you']['body'][0]
+    for y in range(data['board']['height']):
+        for x in range(data['board']['width']):
+            grid[y - origin['y'] + center[1]][x - origin['x'] + center[0]] = board[y][x]
+    
+    if data['you']['name'] == 'test_grid'or data['you']['name'] == 'test':
+        print()
+        for row in grid:
+            print(row)
+        print()
+    
+    return grid
