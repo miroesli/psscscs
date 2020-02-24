@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Battlesnake</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+            crossorigin="anonymous"></script>
+    <script src="form.js"></script>
+</head>
+<body style="padding: 20px">
+
+<div class="pure-g">
+    <div id="errors" class="pure-u-1"></div>
+</div>
+<div class="pure-g">
+    <div class="pure-u-2-5">
+        <form class="pure-form pure-form-aligned">
+            <fieldset>
+                <h2>Start a Game</h2>
+                <div class="pure-control-group">
+                    <label for="width">Width</label>
+                    <input id="width" type="text" value="15">
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="height">Height</label>
+                    <input id="height" type="text" value="15">
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="food">Food</label>
+                    <input id="food" type="text" value="10">
+                </div>
+
+                <div class="pure-control-group">
+                    <label for="food-spawn-chance">Max Turns<br/>To Food Spawn</label>
+                    <input id="food-spawn-chance" type="text" value="">
+                </div>
+
+                <div>
+                    <fieldset style="padding: 5px;" class="snake-group">
+                        <legend>Snake 1</legend>
+                        <div class="pure-control-group">
+                            <label for="snake-name-1" class="snake-name-label">Snake Name</label>
+                            <input id="snake-name-1" class="snake-name" type="text">
+                        </div>
+
+                        <div class="pure-control-group">
+                            <label for="snake-url-1" class="snake-url-label">Snake URL</label>
+                            <input id="snake-url-1" class="snake-url" type="text">
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="pure-controls">
+                    <button id="add-snake-btn" type="button" class="pure-button">Add Snake</button>
+                    <button id="start-game-btn" type="button" class="pure-button pure-button-primary">Start Game</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="pure-u-3-5">
+        <iframe frameborder="0" id="board" width="100%" height="800px" src="http://localhost:3009"></iframe>
+    </div>
+</div>
+<div class="pure-g">
+        <div class="pure-u-2-5">
+            <form class="pure-form pure-form-aligned">
+                <fieldset>
+                    <h2>Validate Snake</h2>
+                    <div class="pure-control-group">
+                        <label for="url">Url</label>
+                        <input id="validate-url" type="text" placeholder="snake url">
+                    </div>
+
+                    <div class="pure-controls">
+                        <button id="validate-snake-btn" type="button" class="pure-button pure-button-primary">Validate</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="pure-u-3-5">
+
+            <div id="validate-snake"></div>
+        </div>
+</div>
+</body>
+</html>
