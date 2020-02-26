@@ -4,7 +4,8 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-from algorithms.preprocess import preprocess
+from preprocess import preprocess
+from online_to_local import translate
 
 @bottle.route('/')
 def index():
@@ -63,15 +64,16 @@ def move():
             snake AI must choose a direction to move in.
     """
     print(json.dumps(data))
-    
-    grid = preprocess(data)
+
+    game, you = translate(data)
+    grid = preprocess(game, you)
     # (y, x) i.e. (row number, column number)
     center = (len(grid[0])//2, len(grid)//2)
     values = [
         grid[center[1] - 1][center[0]], # up
         grid[center[1] + 1][center[0]], # down
         grid[center[1]][center[0] - 1], # left
-        grid[center[1]][center[0] + 1] # right
+        grid[center[1]][center[0] + 1]  # right
     ]
     
     directions = ['up', 'down', 'left', 'right']
