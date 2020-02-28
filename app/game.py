@@ -36,7 +36,7 @@ class Game:
     # I am using the online version (first one)
     def run(self, agents):
         snakes = self.snakes
-        assert len(agents) = len(snakes)
+        assert len(agents) == len(snakes)
         
         # game procedures
         while len(snakes) > 1:

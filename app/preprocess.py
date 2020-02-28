@@ -40,7 +40,7 @@ WALL = 1.0
 MYHEAD = -1.0
 # adders & mutipliers
 # (value + value_a) * value_m
-HUNGER_a = -100
+HUNGER_a = -101
 HUNGER_m = 0.005
 SNAKE_m = 0.01
 
