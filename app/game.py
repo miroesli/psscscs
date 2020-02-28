@@ -130,4 +130,4 @@ class Game:
                     pass
 
         # return the winner if there is one
-        return snakes[0].id if snakes else None
+        return tuple(snakes)[0].id if snakes else None

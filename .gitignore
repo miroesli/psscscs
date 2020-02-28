@@ -4,4 +4,5 @@ battlesnake
 .idea
 .vscode
 engine
-*test_snake*
+*mytest*
+*.old
