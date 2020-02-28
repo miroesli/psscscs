@@ -4,7 +4,7 @@ from snake import Snake
 
 class Game:
     
-    def __init__(self, height, width, snake_cnt):
+    def __init__(self, height = 11, width = 11, snake_cnt = 8):
         assert snake_cnt <= 8
         # empty_positions is used to generate food randomly
         self.empty_positions = {(y, x) for y in range(height) for x in range(width)}
@@ -36,11 +36,9 @@ class Game:
     # I am using the online version (first one)
     def run(self, agents):
         snakes = self.snakes
-        assert len(agents) = len(snakes)
-        
+        assert len(angents) == len(snakes)
         # game procedures
         while len(snakes) > 1:
-            
             # ask for moves
             for snake in snakes:
                 new_head, old_head, tail = snake.move(agents[snake.id].make_move(self, snake))
@@ -128,6 +126,17 @@ class Game:
                 except IndexError:
                     # Cannot choose from an empty set
                     pass
-
-        # return the winner if there is one
-        return snakes[0].id if snakes else None
+        '''
+        for snake in snakes:
+            print("Game ended. Snake", snake.id, "won!")
+            break
+        else:
+            print("Game ended. No one survived.")
+        '''
+s = 0
+t0 = time()
+for _ in range(100):
+    g = Game()
+    g.run()
+    s += g.move_tot
+print(time()-t0, s)

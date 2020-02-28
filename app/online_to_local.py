@@ -1,4 +1,3 @@
-from game import Game
 from snake import Snake
 
 def translate(data):
@@ -15,10 +14,18 @@ def translate(data):
     
     """
 
-    this_food = {(food['y'], food['x']) for food in data['board']['food']}
-    this_snakes = {Snake(snake['id'], snake['health'], [(b['y'], b['x']) for b in snake['body']]) for snake in data['board']['snakes']}
+    food = {(f['y'], f['x']) for f in data['board']['food']}
+    snakes = {Snake(snake['id'], snake['health'], [(b['y'], b['x']) for b in snake['body']]) for snake in data['board']['snakes']}
     you = Snake(data['you']['id'], data['you']['health'], [(b['y'], b['x']) for b in data['you']['body']])
-    this_snakes.add(you)
-    game = Game(data['board']['height'], data['board']['width'], food = this_food, snakes = this_snakes)
+    snakes.add(you)
+    game = Online_Game(data['board']['height'], data['board']['width'], food, snakes)
     
     return game, you
+
+class Online_Game:
+
+    def __init__(self, height, width, food, snakes):
+        self.height = height
+        self.width = width
+        self.food = food
+        self.snakes = snakes
