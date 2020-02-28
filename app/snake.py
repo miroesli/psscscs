@@ -29,7 +29,7 @@ class Snake:
         if tail == self.body[-1]:
             tail = None
         
-        return ((y, x), body[1], tail)
+        return (body[0], body[1], tail)
 
     def grow(self):
         self.body.append(self.body[-1])

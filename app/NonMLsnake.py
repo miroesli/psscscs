@@ -4,8 +4,7 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-from preprocess import preprocess
-from online_to_local import translate
+from data_to_state import translate
 
 @bottle.route('/')
 def index():
@@ -65,19 +64,36 @@ def move():
     """
     print(json.dumps(data))
 
-    game, you = translate(data)
-    grid = preprocess(game, you)
-    # (y, x) i.e. (row number, column number)
-    center = (len(grid[0])//2, len(grid)//2)
-    values = [
-        grid[center[1] - 1][center[0]], # up
-        grid[center[1] + 1][center[0]], # down
-        grid[center[1]][center[0] - 1], # left
-        grid[center[1]][center[0] + 1]  # right
-    ]
+    state = translate(data)
+    
+    _max = -1
+    for _y in range(len(state)):
+        for _x in range(len(state[0])):
+            if _max < state[0][_y][_x]:
+                _max = state[0][_y][_x]
+                y = _y
+                x = _x
+    ds = [0] * 4
+    for board in state:
+        if y > 0:
+            ds[0] += board[y - 1][x]
+        else:
+            ds[0] = 100
+        if y < len(state) - 1:
+            ds[1] += board[y + 1][x]
+        else:
+            ds[1] = 100
+        if x > 0:
+            ds[2] += board[y][x - 1]
+        else:
+            ds[2] = 100
+        if x < len(state[0]) - 1:
+            ds[3] += board[y][x + 1]
+        else:
+            ds[3] = 100
     
     directions = ['up', 'down', 'left', 'right']
-    direction = directions[values.index(min(values))]
+    direction = directions[ds.index(min(ds))]
 
     return move_response(direction)
 
