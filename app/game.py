@@ -66,8 +66,8 @@ class Game:
         snakes = self.snakes
         assert len(agents) == len(snakes)
 
-        '''
-        print("New Game\n")
+        
+        print("--------------------------- New Game ---------------------------\n")
         show = [[0] * 11 for _ in range(11)]
         for ID in range(len(self.state)):
             for i in range(11):
@@ -79,7 +79,7 @@ class Game:
         for row in show:
             print(row)
         print()
-        '''
+        
         
         # game procedures
         while len(snakes) > 1:
@@ -167,12 +167,15 @@ class Game:
                     # it might die due to starvation or equal-length head on collision
                     # only in those two cases, the head position should become an empty space
                     # not out of bound and not into a body
-                    if head[0] >= 0 and head[0] < self.height and head[1] >= 0 and head[1] < self.width \
-                       and head not in self.bodies:
-                        self.empty_positions.add(head)
+                    if head[0] >= 0 and head[0] < self.height and head[1] >= 0 and head[1] < self.width:
+                        # head is in range
+                        self.state[snake.id][head[0]][head[1]] = EMPTY
+                        if head not in self.bodies:
+                            self.empty_positions.add(head)
                 else:
                     self.heads[head].remove(snake)
-                self.state[snake.id][head[0]][head[1]] = EMPTY
+                    # there are more than one heads here, must be a head on or body collision and thus in range
+                    self.state[snake.id][head[0]][head[1]] = EMPTY
                 for i in range(1, len(snake.body)):
                     b = snake.body[i]
                     # it is possible that a snake has eaten on its first move and then die on its second move
@@ -215,7 +218,7 @@ class Game:
                     board[b[0]][b[1]] = EMPTY + dist * SNAKE_m
                     dist -= 1
 
-            '''
+            
             show = [[0] * 11 for _ in range(11)]
             for ID in range(len(self.state)):
                 for i in range(11):
@@ -227,7 +230,7 @@ class Game:
             for row in show:
                 print(row)
             print()
-            '''
+            
 
         # return the winner if there is one
         return tuple(snakes)[0].id if snakes else None
