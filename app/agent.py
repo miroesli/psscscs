@@ -1,5 +1,3 @@
-from preprocess import preprocess
-
 class Agent:
 
     def __init__(self, nnet, training = False):
@@ -8,8 +6,7 @@ class Agent:
         self.records = []
     
     def make_move(self, game, snake):
-        grid = preprocess(game, snake)
         if self.training:
             # record the game state for traininig
-            self.records.append(grid)
+            self.records.append(grid.deepcopy())
         return nnet.eval(grid)

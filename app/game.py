@@ -58,9 +58,10 @@ class Game:
 
     # game rules
     # https://github.com/BattlesnakeOfficial/rules/blob/master/standard.go
-    # this link below is what they use for the engine, and for fuck sake they have defferent algorithms, resulting in different rules
+    # this link below is what they use for the engine
+    # they have defferent algorithms, resulting in different rules
     # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/tick.go
-    # I am using the online version (first one)
+    # I am using the engine version (second one)
     def run(self, agents):
         snakes = self.snakes
         assert len(agents) == len(snakes)
@@ -115,6 +116,24 @@ class Game:
             # reduce health
             for snake in snakes:
                 snake.health -= 1
+
+            # check for food eaten
+            remove_food = set()
+            for snake in snakes:
+                if snake.body[0] in self.food:
+                    remove_food.add(snake.body[0])
+                    snake.health = 100
+                    snake.grow()
+            # remove from list
+            for food in remove_food:
+                self.food.remove(food)
+                # it is gonna be a head block so don't need to update the empty_posionts
+                # unless two snakes of equal length meet on the food both die
+                # in that case the dead snakes will be removed and don't need to worry about it here
+                # just update the state
+                # the snake's head will be recovered at the end of each turn
+                for board in self.state:
+                    board[food[0]][food[1]] = EMPTY
             
             # remove dead snakes
             # I have checked the code of the battlesnake game
@@ -145,38 +164,31 @@ class Game:
                 head = snake.body[0]
                 if len(self.heads[head]) == 1:
                     del self.heads[head]
-                    # head can be out of bound
-                    if head[0] >= 0 and head[0] < self.height and head[1] >= 0 and head[1] < self.width:
+                    # it might die due to starvation or equal-length head on collision
+                    # only in those two cases, the head position should become an empty space
+                    # not out of bound and not into a body
+                    if head[0] >= 0 and head[0] < self.height and head[1] >= 0 and head[1] < self.width \
+                       and head not in self.bodies:
                         self.empty_positions.add(head)
-                        self.state[snake.id][head[0]][head[1]] = EMPTY
                 else:
                     self.heads[head].remove(snake)
+                self.state[snake.id][head[0]][head[1]] = EMPTY
                 for i in range(1, len(snake.body)):
                     b = snake.body[i]
-                    # it is possible at the begining of the game that a snake has eaten on its first move and then die on its second move
-                    # in that case the snake will have a repeated tail
+                    # it is possible that a snake has eaten on its first move and then die on its second move
+                    # or it eats a food and die to head on collision
+                    # in those two cases the snake will have a repeated tail
                     # remove it from bodies twice causes an error
-                    # tried to debug this one for 5 hours and finally got it
-                    # if we change the order we deal with snake growth and killing snakes, we migh run into similar problems
                     try:
                         self.bodies.remove(b)
                         self.empty_positions.add(b)
                         self.state[snake.id][b[0]][b[1]] = EMPTY
                     except KeyError:
                         pass
+                # clear the state board
                 for food in self.food:
                     self.state[snake.id][food[0]][food[1]] = EMPTY
                 snakes.remove(snake)
-            
-            # check for food eaten
-            for snake in snakes:
-                if snake.body[0] in self.food:
-                    food = snake.body[0]
-                    self.food.remove(food)
-                    for board in self.state:
-                        board[food[0]][food[1]] = EMPTY
-                    snake.health = 100
-                    snake.grow()
 
             # spawn food
             if len(self.food) == 0:
