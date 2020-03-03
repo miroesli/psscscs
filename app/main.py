@@ -3,7 +3,7 @@ import os
 import random
 import bottle
 
-from .api import ping_response, start_response, move_response, end_response
+from api import ping_response, start_response, move_response, end_response
 
 
 @bottle.route('/')
@@ -19,7 +19,6 @@ def static(path):
     """
     Given a path, return the static file located relative
     to the static folder.
-
     This can be used to return the snake head URL in an API response.
     """
     return bottle.static_file(path, root='static/')
