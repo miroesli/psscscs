@@ -1,7 +1,7 @@
-# PSSSCS
+# PSSCSCS
 
 A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
-Python by a **P**hysics, 3 **S**oftware Engineering, and a **C**omputer
+Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 **S**cience undergrad.
 
 Visit [https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md](https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md) for API documentation and instructions for running your AI.
