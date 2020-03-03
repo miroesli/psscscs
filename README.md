@@ -2,7 +2,7 @@
 
 A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
 Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
-**S**cience undergrad.
+**S**cience undergrads.
 
 Visit [https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md](https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md) for API documentation and instructions for running your AI.
 
