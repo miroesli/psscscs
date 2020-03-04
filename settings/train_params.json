@@ -1,0 +1,10 @@
+{
+    "trial_1": {
+        "algorithm": "neuralnet",
+        "iterations": "1000"
+    },
+    "trial_2": {
+        "algorithm": "NonMLsnake",
+        "iterations": "1000"
+    }
+}
