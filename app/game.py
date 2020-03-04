@@ -1,16 +1,14 @@
 from random import sample, choice, random
-from copy import deepcopy
 
 from snake import Snake
 
 max_snakes = 8
 EMPTY = 0.5
-MYHEAD = -1.0
 # adders & mutipliers
 # (value + value_a) * value_m
 HUNGER_a = -101
 HUNGER_m = 0.005
-SNAKE_m = 0.01
+SNAKE_m = 0.005
 
 class Game:
     
