@@ -1,4 +1,5 @@
-import random
+from random import sample, choice, random
+from copy import deepcopy
 
 from snake import Snake
 
@@ -36,7 +37,7 @@ class Game:
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
         
-        self.food = set(random.sample(self.empty_positions, snake_cnt))
+        self.food = set(sample(self.empty_positions, snake_cnt))
         for food in self.food:
             self.empty_positions.remove(food)
         
@@ -46,6 +47,12 @@ class Game:
         
         # the game stores the current state
         self.state = [[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)]
+        # make a state for each snake (just a reference list)
+        self.states = [self.state.copy() for _ in range(snake_cnt)]
+        for i in range(1, snake_cnt):
+            temp = self.states[i][0]
+            self.states[i][0] = self.states[i][i]
+            self.states[i][i] = temp
         
         for snake in self.snakes:
             board = self.state[snake.id]
@@ -86,14 +93,7 @@ class Game:
             
             # ask for moves
             for snake in snakes:
-                # make the state for each snake
-                # the current player is always the first one
-                state = self.state.copy()
-                temp = state[0]
-                state[0] = state[snake.id]
-                state[snake.id] = temp
-                
-                new_head, old_head, tail = snake.move(agents[snake.id].make_move(state))
+                new_head, old_head, tail = snake.move(agents[snake.id].make_move(self.states[snake.id]))
                 # update board sets
                 try:
                     # several heads might come to the same cell
@@ -198,9 +198,9 @@ class Game:
                 chance = 1.0
             else:
                 chance = 0.15
-            if random.random() <= chance:
+            if random() <= chance:
                 try:
-                    food = random.choice(tuple(self.empty_positions))
+                    food = choice(tuple(self.empty_positions))
                     self.food.add(food)
                     self.empty_positions.remove(food)
                     for snake in self.snakes:

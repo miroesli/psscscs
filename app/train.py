@@ -1,6 +1,6 @@
-numIters = 100000
-numEps = 1000
-competeEps = 100
+numIters = 100
+numEps = 10000
+competeEps = 1000
 threshold = 0.55
 height = 11
 width = 11
@@ -10,9 +10,7 @@ from game import Game
 from agent import Agent
 
 # https://web.stanford.edu/~surag/posts/alphazero.html
-def train():
-    # initialise neural network
-    nnet = NNet()
+def train(nnet):
     # for training, all agents uses the same nnet
     # unless we want to use a evolution algorithm
     agents = [Agent(nnet, training = True) for _ in range(player_cnt)]
@@ -26,7 +24,8 @@ def train():
                 X = agent.records
                 # need to get a good loss function
                 Y = 0
-                new_nnet = nnet.trainNNet(X, Y)
+                new_nnet = nnet.copy()
+                new_nnet.trainNNet(X, Y)
         # compare new net with previous net
         frac_win = compete(new_nnet, nnet)
         if frac_win > threshold:
@@ -49,5 +48,7 @@ def compete(nnet1, nnet2):
     return win/competeEps
 
 if __name__ == '__main__':
-    nnet = train()
-    # need to store the nnet
+    nnet = NNet()
+    while 1:
+        nnet = train(nnet)
+        # need to store the nnet

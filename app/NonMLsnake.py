@@ -63,34 +63,34 @@ def move():
             snake AI must choose a direction to move in.
     """
     print(json.dumps(data))
-
+    
+    y = data['you']['body'][0]['y']
+    x = data['you']['body'][0]['x']
+    
     state = translate(data)
     
-    _max = -1
-    for _y in range(len(state)):
-        for _x in range(len(state[0])):
-            if _max < state[0][_y][_x]:
-                _max = state[0][_y][_x]
-                y = _y
-                x = _x
     ds = [0] * 4
-    for board in state:
-        if y > 0:
+
+    if y > 0:
+        for board in state:
             ds[0] += board[y - 1][x]
-        else:
-            ds[0] = 100
-        if y < len(state) - 1:
+    else:
+        ds[0] = 1000
+    if y < len(state[0]) - 1:
+        for board in state:
             ds[1] += board[y + 1][x]
-        else:
-            ds[1] = 100
-        if x > 0:
+    else:
+        ds[1] = 1000
+    if x > 0:
+        for board in state:
             ds[2] += board[y][x - 1]
-        else:
-            ds[2] = 100
-        if x < len(state[0]) - 1:
+    else:
+        ds[2] = 1000
+    if x < len(state[0][0]) - 1:
+        for board in state:
             ds[3] += board[y][x + 1]
-        else:
-            ds[3] = 100
+    else:
+        ds[3] = 1000
     
     directions = ['up', 'down', 'left', 'right']
     direction = directions[ds.index(min(ds))]
