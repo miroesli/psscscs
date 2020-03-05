@@ -29,12 +29,11 @@ def train(nnet):
             for i in range(len(agents)):
                 agent = agents[i]
                 X += agent.records
+                # fix this
                 if i == winner_id:
-                    base = 1/len(agent.records)
-                    Y += [base*gamma for gamma in range(1, len(agent.records) + 1)]
+                    pass
                 else:
-                    base = -1/len(agent.records)
-                    Y += [base*gamma for gamma in range(1, len(agent.records) + 1)]
+                    pass
                 agent.clear()
         new_nnet = nnet.copy()
         new_nnet.train(array(X), array(Y))

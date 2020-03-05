@@ -25,7 +25,7 @@ class AlphaNNet:
     def train(self, X, Y):
         self.nnet.fit(X, Y)
     
-    def eval(self, X):
+    def pi(self, X):
         return self.nnet.predict(array([X]))
     
     def copy(self):
