@@ -5,7 +5,7 @@ class Agent:
         self.training = training
         self.records = []
 
-    def make_move(self, game, snake):
+    def make_move(self, game):
         if self.training:
             # record the game state for traininig
             self.records.append(grid.deepcopy())

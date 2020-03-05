@@ -24,25 +24,29 @@ class neuralnet:
     def train(self):
         # initialise neural network
         nnet = NNet()
-        # for training, all agents uses the same nnet
-        # unless we want to use a evolution algorithm
-        agents = [Agent(nnet, training=True) for _ in range(self.player_cnt)]
-        for _ in range(self.numIters):
-            for _ in range(self.numEps):
-                # collect examples from a new game
-                g = Game(self.height, self.width, self.player_cnt)
-                winner_id = g.run(agents)
-                for agent in agents:
-                    # return a new trained nnet
-                    X = agent.records
-                    # need to get a good loss function
-                    Y = 0
-                    new_nnet = nnet.trainNNet(X, Y)
-            # compare new net with previous net
-            frac_win = compete(new_nnet, nnet)
-            if frac_win > self.threshold:
-                # replace with new net
-                nnet = new_nnet
+        # TODO: Change this to iterations?
+        while 1:
+            # for training, all agents uses the same nnet
+            # unless we want to use a evolution algorithm
+            agents = [Agent(nnet, training=True)
+                      for _ in range(self.player_cnt)]
+            for _ in range(self.numIters):
+                for _ in range(self.numEps):
+                    # collect examples from a new game
+                    g = Game(self.height, self.width, self.player_cnt)
+                    winner_id = g.run(agents)
+                    for agent in agents:
+                        # return a new trained nnet
+                        X = agent.records
+                        # need to get a good loss function
+                        Y = 0
+                        new_nnet = nnet.copy()
+                        new_nnet.trainNNet(X, Y)
+                # compare new net with previous net
+                frac_win = compete(new_nnet, nnet)
+                if frac_win > self.threshold:
+                    # replace with new net
+                    nnet = new_nnet
         return nnet
 
     def compete(nnet1, nnet2):
