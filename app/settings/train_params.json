@@ -1,10 +1,14 @@
 {
+    "trial_0": {
+        "algorithm": "template",
+        "iterations": "500"
+    },
     "trial_1": {
         "algorithm": "neuralnet",
-        "iterations": "1000"
+        "numIters": "10000"
     },
     "trial_2": {
-        "algorithm": "NonMLsnake",
-        "iterations": "1000"
+        "algorithm": "neuralnet",
+        "numIters": "2000"
     }
 }
