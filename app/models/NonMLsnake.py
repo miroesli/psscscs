@@ -6,6 +6,7 @@ import bottle
 from api import ping_response, start_response, move_response, end_response
 from data_to_state import translate
 
+
 @bottle.route('/')
 def index():
     return '''
@@ -65,7 +66,7 @@ def move():
     print(json.dumps(data))
 
     state = translate(data)
-    
+
     _max = -1
     for _y in range(len(state)):
         for _x in range(len(state[0])):
@@ -91,7 +92,7 @@ def move():
             ds[3] += board[y][x + 1]
         else:
             ds[3] = 100
-    
+
     directions = ['up', 'down', 'left', 'right']
     direction = directions[ds.index(min(ds))]
 
