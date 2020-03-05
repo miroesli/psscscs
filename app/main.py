@@ -4,6 +4,9 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
+from data_to_state import translate
+
+DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
 
 
 @bottle.route('/')
@@ -62,6 +65,13 @@ def move():
             snake AI must choose a direction to move in.
     """
     print(json.dumps(data))
+
+    # state = translate(data)
+
+    # with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
+    #    config = json.load(config_file)
+
+    # TODO: obtain direction from specified model in the models folder
 
     directions = ['up', 'down', 'left', 'right']
     direction = random.choice(directions)

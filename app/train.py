@@ -1,54 +1,62 @@
-numIters = 100
-numEps = 10000
-competeEps = 1000
-threshold = 0.55
-height = 11
-width = 11
-player_cnt = 8
+import json
+import sys
+# import os
 
-from game import Game
-from agent import Agent
+from algs import *
 
-# https://web.stanford.edu/~surag/posts/alphazero.html
-def train(nnet):
-    # for training, all agents uses the same nnet
-    # unless we want to use a evolution algorithm
-    agents = [Agent(nnet, training = True) for _ in range(player_cnt)]
-    for i in range(numIters):
-        for e in range(numEps):
-            # collect examples from a new game
-            g = Game(height, width, player_cnt)
-            winner_id = g.run(agents)
-            for agent in agents:
-                # return a new trained nnet
-                X = agent.records
-                # need to get a good loss function
-                Y = 0
-                new_nnet = nnet.copy()
-                new_nnet.trainNNet(X, Y)
-        # compare new net with previous net
-        frac_win = compete(new_nnet, nnet)
-        if frac_win > threshold:
-            # replace with new net
-            nnet = new_nnet
-    return nnet
+# from algs.neuralnet import Neuralnet
+# from algs.template import Template
 
-def compete(nnet1, nnet2):
-    agents = [None] * player_cnt
-    sep = player_cnt//2
-    for i in range(sep):
-        agents[i] = Agent(nnet1)
-    for i in range(sep, player_cnt):
-        agents[i] = Agent(nnet2)
-    wins = 0
-    for _ in range(competeEps):
-        g = Game(height, width, player_cnt)
-        if g.run(agents) < sep:
-            wins += 1
-    return win/competeEps
+DEFAULT_TRAIN_CONFIG_PATH = "./settings/train_params"
+DEFAULT_ALGS_PATH = "./algs/"
+VERBOSE = True
 
-if __name__ == '__main__':
-    nnet = NNet()
-    while 1:
-        nnet = train(nnet)
-        # need to store the nnet
+
+def usage():
+    print("Usage: python train.py [path/to/config/file] trial_name")
+
+
+def main():
+    # check if there is an input file
+    if len(sys.argv) > 3 or len(sys.argv) < 2:
+        print("Incorrect usage...")
+        usage()
+        exit(0)
+
+    if len(sys.argv) == 3:
+        # parse the input json file and run the associated training alg
+        try:
+            with open(sys.argv[1]+".json", "r") as config_file:
+                config = json.load(config_file)
+        except FileNotFoundError:
+            print("No configuration file found. Using default.")
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
+        trial = sys.argv[2]
+    else:
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
+        trial = sys.argv[1]
+
+    if VERBOSE:
+        config = config[trial]
+        print('config:', dict(**config))
+
+    try:
+        algorithm = config['algorithm']
+    except Exception:
+        print("Missing algorithm parameter")
+        exit(0)
+
+    if algorithm == 'neuralnet':
+        alg = neuralnet(**config)
+    else:
+        alg = template(**config)
+
+    alg.train()
+
+    # TODO: store the trained model in models folder
+
+
+if __name__ == "__main__":
+    main()
