@@ -13,7 +13,7 @@ SNAKE_m = 0.005
 
 class Game:
     
-    def __init__(self, height, width, snake_cnt):
+    def __init__(self, height, width, snake_cnt, initial_food, food_spawn_period):
         
         assert snake_cnt <= max_snakes
         
@@ -31,12 +31,13 @@ class Game:
         
         self.height = height
         self.width = width
+        self.food_spawn_period = food_spawn_period
         
         self.snakes = {Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)}
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
         
-        self.food = set(sample(self.empty_positions, snake_cnt))
+        self.food = set(sample(self.empty_positions, initial_food))
         for food in self.food:
             self.empty_positions.remove(food)
         
@@ -86,6 +87,8 @@ class Game:
             print(row)
         print()
         '''
+
+        spawn_counter = 0
         
         # game procedures
         while len(snakes) > 1:
@@ -133,6 +136,31 @@ class Game:
                 # the snake's head will be recovered at the end of each turn
                 for board in self.state:
                     board[food[0]][food[1]] = EMPTY
+            
+            # spawn food
+            if self.food_spawn_period <= 0:
+                food_to_add = len(remove_food)
+            elif spawn_counter == self.food_spawn_period:
+                food_to_add = (len(snakes) + 1)//2
+            else:
+                if random() < 0.15:
+                    food_to_add = (len(snakes) + 1)//2
+                else:
+                    food_to_add = 0
+            if food_to_add > 0:
+                spawn_counter = 0
+                try:
+                    for _ in range(food_to_add):
+                        food = choice(tuple(self.empty_positions))
+                        self.food.add(food)
+                        self.empty_positions.remove(food)
+                        for snake in self.snakes:
+                            self.state[snake.id][food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
+                except IndexError:
+                    # Cannot choose from an empty set
+                    pass
+            else:
+                spawn_counter += 1
             
             # remove dead snakes
             # I have checked the code of the battlesnake game
@@ -191,22 +219,6 @@ class Game:
                 for food in self.food:
                     self.state[snake.id][food[0]][food[1]] = EMPTY
                 snakes.remove(snake)
-
-            # spawn food
-            if len(self.food) == 0:
-                chance = 1.0
-            else:
-                chance = 0.15
-            if random() <= chance:
-                try:
-                    food = choice(tuple(self.empty_positions))
-                    self.food.add(food)
-                    self.empty_positions.remove(food)
-                    for snake in self.snakes:
-                        self.state[snake.id][food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
-                except IndexError:
-                    # Cannot choose from an empty set
-                    pass
             
             # update the state
             for snake in self.snakes:

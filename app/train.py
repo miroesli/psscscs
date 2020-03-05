@@ -5,6 +5,7 @@ threshold = 0.55
 height = 11
 width = 11
 player_cnt = 8
+food_spawn_period = 0
 
 from numpy import array
 
@@ -23,7 +24,7 @@ def train(nnet):
         # the loop below can use distributed computing
         for e in range(numEps):
             # collect examples from a new game
-            g = Game(height, width, player_cnt)
+            g = Game(height, width, player_cnt, player_cnt, food_spawn_period)
             winner_id = g.run(agents)
             for i in range(len(agents)):
                 agent = agents[i]
@@ -56,7 +57,7 @@ def compete(nnet1, nnet2):
         agents[i] = Agent(nnet2)
     wins = 0
     for _ in range(competeEps):
-        g = Game(height, width, player_cnt)
+        g = Game(height, width, player_cnt, player_cnt, food_spawn_period)
         if g.run(agents) < sep:
             wins += 1
     return win/competeEps
