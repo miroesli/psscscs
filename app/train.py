@@ -40,14 +40,13 @@ def main():
 
     if VERBOSE:
         config = config[trial]
+        print('config:', dict(**config))
 
     try:
         algorithm = config['algorithm']
     except Exception:
         print("Missing algorithm parameter")
         exit(0)
-
-    print(dict(**config))
 
     if algorithm == 'neuralnet':
         alg = neuralnet(**config)
