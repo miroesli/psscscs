@@ -12,8 +12,8 @@ class Agent:
         if self.training:
             # record the game state for traininig
             self.records.append(X)
-        values = nnet.eval(X)
-        return values.index(max(values))
+        values = self.nnet.eval(X)
+        return values.argmax()
     
     def clear(self):
         self.records = []

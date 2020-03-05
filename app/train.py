@@ -24,13 +24,14 @@ def train(nnet):
             g = Game(height, width, player_cnt)
             winner_id = g.run(agents)
             for i in range(len(agents)):
-                X += agent.record
+                agent = agents[i]
+                X += agent.records
                 if i == winner_id:
-                    base = 1/len(agent.record)
-                    Y += [base*gamma for gamma in range(1, len(agent.record) + 1)]
+                    base = 1/len(agent.records)
+                    Y += [base*gamma for gamma in range(1, len(agent.records) + 1)]
                 else:
-                    base = -1/len(agent.record)
-                    Y += [base*gamma for gamma in range(1, len(agent.record) + 1)]
+                    base = -1/len(agent.records)
+                    Y += [base*gamma for gamma in range(1, len(agent.records) + 1)]
                 agent.clear()
         new_nnet = nnet.copy()
         new_nnet.fit(X, Y)
@@ -59,7 +60,7 @@ def compete(nnet1, nnet2):
     return win/competeEps
 
 if __name__ == '__main__':
-    nnet = AlphaNNet()
+    nnet = AlphaNNet(in_shape = (player_cnt, height, width))
     num = 0
     while 1:
         num += 1
