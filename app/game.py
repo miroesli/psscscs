@@ -1,4 +1,5 @@
 from random import sample, choice, random
+from numpy import array
 
 from snake import Snake
 
@@ -44,7 +45,7 @@ class Game:
         self.bodies = {snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
         
         # the game stores the current state
-        self.state = [[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)]
+        self.state = array([[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)])
         # make a state for each snake (just a reference list)
         self.states = [self.state.copy() for _ in range(snake_cnt)]
         for i in range(1, snake_cnt):
@@ -71,7 +72,7 @@ class Game:
         snakes = self.snakes
         assert len(agents) == len(snakes)
 
-        
+        '''
         print("--------------------------- New Game ---------------------------\n")
         show = [[0] * 11 for _ in range(11)]
         for ID in range(len(self.state)):
@@ -84,7 +85,7 @@ class Game:
         for row in show:
             print(row)
         print()
-        
+        '''
         
         # game procedures
         while len(snakes) > 1:
@@ -216,7 +217,7 @@ class Game:
                     board[b[0]][b[1]] = EMPTY + dist * SNAKE_m
                     dist -= 1
 
-            
+            '''
             show = [[0] * 11 for _ in range(11)]
             for ID in range(len(self.state)):
                 for i in range(11):
@@ -228,7 +229,7 @@ class Game:
             for row in show:
                 print(row)
             print()
-            
+            '''
 
         # return the winner if there is one
         return tuple(snakes)[0].id if snakes else None

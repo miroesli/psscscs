@@ -1,12 +1,12 @@
 max_snakes = 8
 EMPTY = 0.5
-WALL = 1.0
-MYHEAD = -1.0
 # adders & mutipliers
 # (value + value_a) * value_m
-HUNGER_a = -100
+HUNGER_a = -101
 HUNGER_m = 0.005
-SNAKE_m = 0.01
+SNAKE_m = 0.005
+
+from numpy import array
 
 def translate(data):
     """ Preprocess the data
@@ -24,7 +24,7 @@ def translate(data):
     height = data['board']['height']
     width = data['board']['width']
 
-    state = [[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)]
+    state = array([[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)])
 
     health = data['you']['health']
     dist = len(data['you']['body'])
