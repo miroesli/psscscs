@@ -39,9 +39,9 @@ def train(nnet):
         if frac_win > threshold:
             # replace with new net
             nnet = new_nnet
-            print("Iteration", i, "is now the new champion!")
+            print("Iteration", i, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
         else:
-            print("Iteration", i, "failed to beat the previouse one.")
+            print("Iteration", i, "failed to beat the previouse one.\n")
     return nnet
 
 def compete(nnet1, nnet2):
