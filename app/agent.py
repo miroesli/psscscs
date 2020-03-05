@@ -1,24 +1,25 @@
 from numpy import array
 
+# The Contingency 0.1
 class Agent:
 
     def __init__(self, nnet, training = False):
         self.nnet = nnet
         self.training = training
         self.records = []
-        self.movess = []
+        self.policies = []
     
     def make_move(self, state):
         X = array(state)
-        values = self.nnet.eval(X)
+        values = self.nnet.pi(X)
         move = values.argmax()
         if self.training:
             # record the game state for traininig
             self.records.append(X)
-            # record the move made by the agent
-            self.moves.append(move)
+            # record the policy calculated by the network
+            self.policies.append(values)
         return move
     
     def clear(self):
         self.records = []
-        self.moves = []
+        self.policies = []
