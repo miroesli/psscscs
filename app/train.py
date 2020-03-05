@@ -1,13 +1,15 @@
 import json
-import os
 import sys
+# import os
 
-DEFAULT_TRAIN_CONFIG_PATH = "../settings/train_params"
-DEFAULT_ALGS_PATH = "../algs/"
+from algs import *
 
+# from algs.neuralnet import Neuralnet
+# from algs.template import Template
 
-def train():
-    pass
+DEFAULT_TRAIN_CONFIG_PATH = "./settings/train_params"
+DEFAULT_ALGS_PATH = "./algs/"
+VERBOSE = True
 
 
 def usage():
@@ -28,27 +30,33 @@ def main():
                 config = json.load(config_file)
         except FileNotFoundError:
             print("No configuration file found. Using default.")
-            with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
-                config = json.load(config_file)
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
         trial = sys.argv[2]
     else:
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
         trial = sys.argv[1]
 
+    if VERBOSE:
+        config = config[trial]
+
     try:
-        algorithm = config[trial]['algorithm']
-        iterations = config[trial]['iterations']
+        algorithm = config['algorithm']
     except Exception:
-        print("Missing training parameter")
+        print("Missing algorithm parameter")
         exit(0)
 
-    # if os.path.exists(DEFAULT_ALGS_PATH+"/"+algorithm):
-    #     os.system("python "+model_path+" "+data_dir_path+" "+results_dir_path)
+    print(dict(**config))
 
-    # use them as classes?
+    if algorithm == 'neuralnet':
+        alg = neuralnet(**config)
+    else:
+        alg = template(**config)
 
-    # check if alg = nn or other and run the associated algorithm
+    alg.train()
 
-    # compare its performance with the previous
+    # TODO: store the trained model in models folder
 
 
 if __name__ == "__main__":
