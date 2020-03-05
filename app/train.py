@@ -6,6 +6,8 @@ height = 11
 width = 11
 player_cnt = 8
 
+from numpy import array
+
 from AlphaNNet import AlphaNNet
 from game import Game
 from agent import Agent
@@ -25,7 +27,6 @@ def train(nnet):
             winner_id = g.run(agents)
             for i in range(len(agents)):
                 agent = agents[i]
-                print(agent.records)
                 X += agent.records
                 if i == winner_id:
                     base = 1/len(agent.records)
@@ -35,7 +36,7 @@ def train(nnet):
                     Y += [base*gamma for gamma in range(1, len(agent.records) + 1)]
                 agent.clear()
         new_nnet = nnet.copy()
-        new_nnet.fit(X, Y)
+        new_nnet.train(array(X), array(Y))
         # compare new net with previous net
         frac_win = compete(new_nnet, nnet)
         if frac_win > threshold:

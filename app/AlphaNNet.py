@@ -6,11 +6,15 @@ class AlphaNNet:
     def __init__(self, model = None, in_shape = None):
         if model:
             self.nnet = ks.models.load_model(model)
-        else:
+        elif in_shape:
+            size = 1
+            for i in range(1, len(in_shape)):
+                size *= in_shape[i]
+            self.in_shape = in_shape
             self.nnet = ks.Sequential([
                 ks.layers.Flatten(input_shape = in_shape),
-                ks.layers.Dense(968, activation = 'relu'),
-                ks.layers.Dense(968, activation = 'relu'),
+                ks.layers.Dense(size, activation = 'relu'),
+                ks.layers.Dense(size, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
@@ -25,7 +29,15 @@ class AlphaNNet:
         return self.nnet.predict(array([X]))
     
     def copy(self):
-        return ks.models.clone_model(self.nnet)
+        nnet_copy = AlphaNNet()
+        nnet_copy.nnet = ks.models.clone_model(self.nnet)
+        nnet_copy.nnet.build(self.nnet.layers[0].input_shape)
+        nnet_copy.nnet.compile(
+                optimizer = 'sgd',
+                loss = ks.losses.CategoricalCrossentropy()
+            )
+        nnet_copy.nnet.set_weights(self.nnet.get_weights())
+        return nnet_copy
     
     def save(self, name):
         self.nnet.save(name + '.h5')
