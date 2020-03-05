@@ -1,5 +1,5 @@
 numIters = 100
-numEps = 10
+numEps = 1
 competeEps = 1000
 threshold = 0.55
 height = 11
@@ -25,6 +25,7 @@ def train(nnet):
             winner_id = g.run(agents)
             for i in range(len(agents)):
                 agent = agents[i]
+                print(agent.records)
                 X += agent.records
                 if i == winner_id:
                     base = 1/len(agent.records)
