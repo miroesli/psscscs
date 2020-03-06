@@ -10,7 +10,7 @@ from utils.alphaNNet import AlphaNNet
 class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=1,
-                 numEps=1000,
+                 numEps=100,
                  competeEps=100,
                  threshold=0.55,
                  height=11,
