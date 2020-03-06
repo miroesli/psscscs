@@ -1,5 +1,4 @@
 from random import sample, choice, random
-from numpy import array
 
 from utils.snake import Snake
 
@@ -21,10 +20,11 @@ class Game:
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
         # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/create.go
-        positions = [
-            (1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
-            (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
-        ]
+        positions = sample(
+            [(1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
+             (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
+             ],
+            snake_cnt)
         
         # I changed the data structure to speed up the game
         # empty_positions is used to generate food randomly
