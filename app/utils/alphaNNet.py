@@ -1,7 +1,7 @@
 from tensorflow import keras as ks
 from numpy import array
 
-models_fp = 'data/'
+models_fp = 'models/'
 
 class AlphaNNet:
 
