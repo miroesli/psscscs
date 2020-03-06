@@ -14,7 +14,7 @@ class neuralnet_trainer:
                  height=11,
                  width=11,
                  player_cnt=8,
-                 model=None
+                 model=None,
                  **config):
 
         self.numIters = numIters
