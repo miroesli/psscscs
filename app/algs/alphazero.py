@@ -50,7 +50,7 @@ class AlphaZeroTrainer:
             new_nnet = nnet.copy()
             new_nnet.train(np.array(X), np.array(Y))
             # compare new net with previous net
-            frac_win = compete(new_nnet, nnet)
+            frac_win = self.compete(new_nnet, nnet)
             if frac_win > threshold:
                 # replace with new net
                 nnet = new_nnet
