@@ -50,7 +50,7 @@ class neuralnet_trainer:
             new_nnet = nnet.copy()
             new_nnet.train(array(X), array(Y))
             # compare new net with previous net
-            frac_win = compete(new_nnet, nnet)
+            frac_win = self.compete(new_nnet, nnet)
             if frac_win > threshold:
                 # replace with new net
                 nnet = new_nnet
@@ -68,7 +68,7 @@ class neuralnet_trainer:
         model_num = 0
         while 1:
             model_num += 1
-            nnet = train_alpha(nnet)
+            nnet = self.train_alpha(nnet)
             # need to store the nnet
             nnet.save("Network No." + str(model_num))
 
