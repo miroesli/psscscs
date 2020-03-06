@@ -1,3 +1,5 @@
+from numpy import array, argmax
+
 from utils.agent import Agent
 from utils.game import Game
 from utils.alphaNNet import AlphaNNet
@@ -7,8 +9,8 @@ from utils.alphaNNet import AlphaNNet
 
 class neuralnet_trainer:
     
-    def __init__(self, numIters=100000,
-                 numEps=1000,
+    def __init__(self, numIters=1,
+                 numEps=10,
                  competeEps=100,
                  threshold=0.55,
                  height=11,
@@ -41,21 +43,43 @@ class neuralnet_trainer:
                 for i in range(len(agents)):
                     agent = agents[i]
                     X += agent.records
-                    # fix this
+                    # assign estimated policies
+                    # this substitutes the MCTS
+                    step = len(agent.policies)
                     if i == winner_id:
-                        pass
+                        for i in range(step):
+                            index = argmax(agent.policies[i])
+                            decay = [0] * 4
+                            boost = 0
+                            for j in range(4):
+                                if j != index:
+                                    decay[j] = agent.policies[i][j]*(i + 1)/step
+                                    boost += decay[j]
+                            for j in range(4):
+                                if j == index:
+                                    agent.policies[i][j] += boost
+                                else:
+                                    agent.policies[i][j] -= decay[j]
                     else:
-                        pass
+                        for i in range(step):
+                            index = argmax(agent.policies[i])
+                            decay = agent.policies[i][index]*(i + 1)/step
+                            boost = decay/3
+                            for j in range(4):
+                                if j == index:
+                                    agent.policies[i][j] -= decay
+                                else:
+                                    agent.policies[i][j] += boost
+                    Y += agent.policies
                     agent.clear()
             new_nnet = nnet.copy()
             new_nnet.train(array(X), array(Y))
             # compare new net with previous net
             frac_win = self.compete(new_nnet, nnet)
-            if frac_win > threshold:
+            if frac_win > self.threshold:
                 # replace with new net
                 nnet = new_nnet
-                print("Iteration", i, "beats the previouse version with a WR of",
-                      frac_win, "\nIt is now the new champion!\n")
+                print("Iteration", i, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
             else:
                 print("Iteration", i, "failed to beat the previouse one.\n")
         return nnet
@@ -70,18 +94,20 @@ class neuralnet_trainer:
             model_num += 1
             nnet = self.train_alpha(nnet)
             # need to store the nnet
-            nnet.save("Network No." + str(model_num))
+            nnet.save("Network_No." + str(model_num))
+            print("Network saved.")
 
     def compete(self, nnet1, nnet2):
         agents = [None] * self.player_cnt
         sep = self.player_cnt//2
         for i in range(sep):
             agents[i] = Agent(nnet1)
-        for i in range(sep, player_cnt):
+        for i in range(sep, self.player_cnt):
             agents[i] = Agent(nnet2)
-        wins = 0
+        win = 0
         for _ in range(self.competeEps):
             g = Game(self.height, self.width, self.player_cnt)
-            if g.run(agents) < sep:
-                wins += 1
+            winner = g.run(agents)
+            if winner and winner < sep:
+                win += 1
         return win/self.competeEps
