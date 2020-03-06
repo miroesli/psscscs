@@ -16,7 +16,6 @@ class AlphaZeroTrainer:
                  player_cnt=8,
                  food_spawn_period=0,
                  **config):
-        print(type(numIters))
         self.numIters = numIters
         self.numEps = numEps
         self.competeEps = competeEps
