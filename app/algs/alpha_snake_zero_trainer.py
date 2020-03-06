@@ -10,8 +10,8 @@ from utils.alphaNNet import AlphaNNet
 class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=10,
-                 numEps=1000,
-                 competeEps=1000,
+                 numEps=10,
+                 competeEps=100,
                  threshold=0.55,
                  height=11,
                  width=11,
@@ -32,11 +32,11 @@ class AlphaSnakeZeroTrainer:
         # for training, all agents uses the same nnet
         # unless we want to use a evolution algorithm
         agents = [Agent(nnet, training=True) for _ in range(self.player_cnt)]
-        for i in range(self.numIters):
+        for iter in range(self.numIters):
             X = []
             Y = []
             # the loop below can use distributed computing
-            for e in range(self.numEps):
+            for ep in range(self.numEps):
                 # collect examples from a new game
                 g = Game(self.height, self.width, self.player_cnt)
                 winner_id = g.run(agents)
@@ -47,29 +47,29 @@ class AlphaSnakeZeroTrainer:
                     # this substitutes the MCTS
                     step = len(agent.policies)
                     if i == winner_id:
-                        for i in range(step):
-                            index = argmax(agent.policies[i])
+                        for j in range(step):
+                            index = argmax(agent.policies[j])
                             decay = [0] * 4
                             boost = 0
-                            for j in range(4):
-                                if j != index:
-                                    decay[j] = agent.policies[i][j]*(i + 1)/step
-                                    boost += decay[j]
-                            for j in range(4):
-                                if j == index:
-                                    agent.policies[i][j] += boost
+                            for k in range(4):
+                                if k != index:
+                                    decay[k] = agent.policies[j][k]*(j + 1)/step
+                                    boost += decay[k]
+                            for k in range(4):
+                                if k == index:
+                                    agent.policies[j][k] += boost
                                 else:
-                                    agent.policies[i][j] -= decay[j]
+                                    agent.policies[j][k] -= decay[k]
                     else:
-                        for i in range(step):
-                            index = argmax(agent.policies[i])
-                            decay = agent.policies[i][index]*(i + 1)/step
+                        for j in range(step):
+                            index = argmax(agent.policies[j])
+                            decay = agent.policies[j][index]*(j + 1)/step
                             boost = decay/3
-                            for j in range(4):
-                                if j == index:
-                                    agent.policies[i][j] -= decay
+                            for k in range(4):
+                                if k == index:
+                                    agent.policies[j][k] -= decay
                                 else:
-                                    agent.policies[i][j] += boost
+                                    agent.policies[j][k] += boost
                     Y += agent.policies
                     agent.clear()
             new_nnet = nnet.copy()
