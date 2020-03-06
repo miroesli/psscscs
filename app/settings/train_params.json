@@ -5,7 +5,8 @@
     },
     "trial_1": {
         "algorithm": "neuralnet",
-        "numIters": "10000"
+        "numIters": "10000",
+        "threshold": "0.6"
     },
     "trial_2": {
         "algorithm": "neuralnet",

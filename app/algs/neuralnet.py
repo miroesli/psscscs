@@ -1,17 +1,20 @@
 from utils.agent import Agent
 from utils.game import Game
+from utils.AlphaNNet import AlphaNNet
 
 # https://web.stanford.edu/~surag/posts/alphazero.html
 
 
-class neuralnet:
+class neuralnet_trainer:
     def __init__(self, numIters=100000,
                  numEps=1000,
                  competeEps=100,
                  threshold=0.55,
                  height=11,
                  width=11,
-                 player_cnt=8, **config):
+                 player_cnt=8,
+                 food_spawn_period=0,
+                 **config):
 
         self.numIters = numIters
         self.numEps = numEps
@@ -20,34 +23,51 @@ class neuralnet:
         self.height = height
         self.width = width
         self.player_cnt = player_cnt
+        self.food_spawn_period = food_spawn_period
+
+    def train_alpha(nnet):
+        # for training, all agents uses the same nnet
+        # unless we want to use a evolution algorithm
+        agents = [Agent(nnet, training=True) for _ in range(self.player_cnt)]
+        for i in range(self.numIters):
+            X = []
+            Y = []
+            # the loop below can use distributed computing
+            for e in range(self.numEps):
+                # collect examples from a new game
+                g = Game(self.height, self.width, self.player_cnt,
+                         self.player_cnt, self.food_spawn_period)
+                winner_id = g.run(agents)
+                for i in range(len(agents)):
+                    agent = agents[i]
+                    X += agent.records
+                    # fix this
+                    if i == winner_id:
+                        pass
+                    else:
+                        pass
+                    agent.clear()
+            new_nnet = nnet.copy()
+            new_nnet.train(array(X), array(Y))
+            # compare new net with previous net
+            frac_win = compete(new_nnet, nnet)
+            if frac_win > threshold:
+                # replace with new net
+                nnet = new_nnet
+                print("Iteration", i, "beats the previouse version with a WR of",
+                      frac_win, "\nIt is now the new champion!\n")
+            else:
+                print("Iteration", i, "failed to beat the previouse one.\n")
+        return nnet
 
     def train(self):
-        # initialise neural network
-        nnet = NNet()
-        # TODO: Change this to iterations?
+        nnet = AlphaNNet(in_shape=(player_cnt, height, width))
+        num = 0
         while 1:
-            # for training, all agents uses the same nnet
-            # unless we want to use a evolution algorithm
-            agents = [Agent(nnet, training=True)
-                      for _ in range(self.player_cnt)]
-            for _ in range(self.numIters):
-                for _ in range(self.numEps):
-                    # collect examples from a new game
-                    g = Game(self.height, self.width, self.player_cnt)
-                    winner_id = g.run(agents)
-                    for agent in agents:
-                        # return a new trained nnet
-                        X = agent.records
-                        # need to get a good loss function
-                        Y = 0
-                        new_nnet = nnet.copy()
-                        new_nnet.trainNNet(X, Y)
-                # compare new net with previous net
-                frac_win = compete(new_nnet, nnet)
-                if frac_win > self.threshold:
-                    # replace with new net
-                    nnet = new_nnet
-        return nnet
+            num += 1
+            nnet = train_alpha(nnet)
+            # need to store the nnet
+            nnet.save("Network No." + str(num))
 
     def compete(nnet1, nnet2):
         agents = [None] * self.player_cnt

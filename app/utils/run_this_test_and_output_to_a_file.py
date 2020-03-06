@@ -52,6 +52,6 @@ feel free to make your own test
 agents = [nonMLagent()] * 8
 t0 = time()
 for _ in range(100):
-    g = Game(11, 11, 8)
+    g = Game(11, 11, 8, 8, 8)
     g.run(agents)
 print("totoal run time ", time() - t0)
