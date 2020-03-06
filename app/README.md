@@ -1,12 +1,12 @@
 ##    Project structure  
 .  
-├ main.py
+├ main.py  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     :snake:    
 ├ api.py  
 ├ train.py  
 ├ simple_train.py  
-├ algs/              - generic algorithms  
-├ data/              - saved prediction models    
-├ models/            - constructed models    
-├ settings/          - JSON formatted model selection & input parameters  
-└ utils/             - generic utilities  
+├ algs/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - generic algorithms  
+├ data/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - saved prediction models    
+├ models/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - constructed models    
+├ settings/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - JSON formatted model selection & input parameters  
+└ utils/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - generic utilities  
 

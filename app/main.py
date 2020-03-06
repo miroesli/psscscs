@@ -60,15 +60,13 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-    #print(translate(data))
-    snake.pi(translate(data)[0])
+    #this kinda banks on the fact that returned array is equivalent to the directions mapping below
+    pred = list(snake.pi(translate(data)[0])) 
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
     #print(json.dumps(data))
-
-    # state = translate(data)
 
     # with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     #    config = json.load(config_file)
@@ -76,9 +74,10 @@ def move():
     # TODO: obtain direction from specified model in the models folder
 
     directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
+    #direction = random.choice(directions)
 
-    return move_response(direction)
+    return directions[pred.index(min(pred))]
+    #return move_response(direction)
 
 
 @bottle.post('/end')
