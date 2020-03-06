@@ -1,12 +1,16 @@
 from tensorflow import keras as ks
 from numpy import array
 
+models_fp = 'data/'
+
 class AlphaNNet:
 
     def __init__(self, model=None, in_shape=None):
-        if model:
-            self.nnet = ks.models.load_model(model)
-        elif in_shape:
+        try:
+        #if model:
+            self.nnet = ks.models.load_model(models_fp + model)
+        except IOError: #file not found
+        #elif in_shape:
             size = 1
             for i in range(1, len(in_shape)):
                 size *= in_shape[i]
@@ -40,4 +44,4 @@ class AlphaNNet:
         return nnet_copy
     
     def save(self, name):
-        self.nnet.save(name + '.h5')
+        self.nnet.save(models_fp + name + '.h5')

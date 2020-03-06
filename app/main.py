@@ -4,7 +4,8 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-from data_to_state import translate
+from utils.data_to_state import translate
+from utils.alphaNNet import AlphaNNet
 
 DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
 
@@ -59,12 +60,13 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-
+    #print(translate(data))
+    snake.pi(translate(data)[0])
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
+    #print(json.dumps(data))
 
     # state = translate(data)
 
@@ -82,7 +84,8 @@ def move():
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-
+    #TODO: train snake based on match result
+    snake.save('current')
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
@@ -94,6 +97,7 @@ def end():
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
+snake = AlphaNNet(model='current', in_shape=[15, 15])
 
 if __name__ == '__main__':
     bottle.run(
