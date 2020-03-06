@@ -72,7 +72,7 @@ class neuralnet_trainer:
             # need to store the nnet
             nnet.save("Network No." + str(model_num))
 
-    def compete(nnet1, nnet2):
+    def compete(self, nnet1, nnet2):
         agents = [None] * self.player_cnt
         sep = self.player_cnt//2
         for i in range(sep):
