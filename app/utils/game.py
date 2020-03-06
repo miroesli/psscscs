@@ -37,7 +37,7 @@ class Game:
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
         
-        self.food = set(random.sample(self.empty_positions, snake_cnt))
+        self.food = set(sample(self.empty_positions, snake_cnt))
         for food in self.food:
             self.empty_positions.remove(food)
         
@@ -190,9 +190,9 @@ class Game:
                 chance = 1.0
             else:
                 chance = 0.15
-            if random.random() <= chance:
+            if random() <= chance:
                 try:
-                    food = random.choice(tuple(self.empty_positions))
+                    food = choice(tuple(self.empty_positions))
                     self.food.add(food)
                     self.empty_positions.remove(food)
                     for snake in self.snakes:
