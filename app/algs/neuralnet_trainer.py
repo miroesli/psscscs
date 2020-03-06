@@ -26,7 +26,7 @@ class neuralnet_trainer:
         self.player_cnt = player_cnt
         self.model = model
 
-    def train_alpha(nnet):
+    def train_alpha(self, nnet):
         # for training, all agents uses the same nnet
         # unless we want to use a evolution algorithm
         agents = [Agent(nnet, training=True) for _ in range(self.player_cnt)]
