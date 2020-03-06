@@ -48,7 +48,7 @@ class AlphaSnakeZeroTrainer:
                     step = len(agent.policies)
                     if i == winner_id:
                         for j in range(step):
-                            index = argmax(agent.policies[j])
+                            index = agent.moves[j]
                             decay = [0] * 4
                             boost = 0
                             for k in range(4):
@@ -62,7 +62,7 @@ class AlphaSnakeZeroTrainer:
                                     agent.policies[j][k] -= decay[k]
                     else:
                         for j in range(step):
-                            index = argmax(agent.policies[j])
+                            index = agent.moves[j]
                             decay = agent.policies[j][index]*(j + 1)/step
                             boost = decay/3
                             for k in range(4):
@@ -110,7 +110,8 @@ class AlphaSnakeZeroTrainer:
             g = Game(self.height, self.width, self.player_cnt)
             winner = g.run(agents)
             if winner is None:
-                pass
+                win += 1
+                loss += 1
             elif winner < sep:
                 win += 1
             else:
