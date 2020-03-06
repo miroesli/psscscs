@@ -6,6 +6,7 @@ from utils.alphaNNet import AlphaNNet
 
 
 class neuralnet_trainer:
+    
     def __init__(self, numIters=100000,
                  numEps=1000,
                  competeEps=100,
@@ -13,7 +14,7 @@ class neuralnet_trainer:
                  height=11,
                  width=11,
                  player_cnt=8,
-                 food_spawn_period=0,
+                 model=None
                  **config):
 
         self.numIters = numIters
@@ -23,7 +24,7 @@ class neuralnet_trainer:
         self.height = height
         self.width = width
         self.player_cnt = player_cnt
-        self.food_spawn_period = food_spawn_period
+        self.model = model
 
     def train_alpha(nnet):
         # for training, all agents uses the same nnet
@@ -35,8 +36,7 @@ class neuralnet_trainer:
             # the loop below can use distributed computing
             for e in range(self.numEps):
                 # collect examples from a new game
-                g = Game(self.height, self.width, self.player_cnt,
-                         self.player_cnt, self.food_spawn_period)
+                g = Game(self.height, self.width, self.player_cnt)
                 winner_id = g.run(agents)
                 for i in range(len(agents)):
                     agent = agents[i]
@@ -61,13 +61,16 @@ class neuralnet_trainer:
         return nnet
 
     def train(self):
-        nnet = AlphaNNet(in_shape=(player_cnt, height, width))
-        num = 0
+        if self.model:
+            nnet = AlphaNNet(model=self.model)
+        else:
+            nnet = AlphaNNet(in_shape=(self.player_cnt, self.height, self.width))
+        model_num = 0
         while 1:
-            num += 1
+            model_num += 1
             nnet = train_alpha(nnet)
             # need to store the nnet
-            nnet.save("Network No." + str(num))
+            nnet.save("Network No." + str(model_num))
 
     def compete(nnet1, nnet2):
         agents = [None] * self.player_cnt

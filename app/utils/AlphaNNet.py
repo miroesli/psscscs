@@ -3,7 +3,7 @@ from numpy import array
 
 class AlphaNNet:
 
-    def __init__(self, model = None, in_shape = None):
+    def __init__(self, model=None, in_shape=None):
         if model:
             self.nnet = ks.models.load_model(model)
         elif in_shape:

@@ -49,7 +49,7 @@ def main():
         exit(0)
 
     if algorithm == 'neuralnet':
-        alg = neuralnet(**config)
+        alg = neuralnet_trainer(**config)
     else:
         alg = template(**config)
 

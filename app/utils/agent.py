@@ -3,7 +3,7 @@ from numpy import array
 
 class Agent:
 
-    def __init__(self, nnet, training = False):
+    def __init__(self, nnet, training=False):
         self.nnet = nnet
         self.training = training
         self.records = []
