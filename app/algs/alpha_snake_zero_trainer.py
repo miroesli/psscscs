@@ -9,9 +9,9 @@ from utils.alphaNNet import AlphaNNet
 
 class AlphaSnakeZeroTrainer:
     
-    def __init__(self, numIters=10,
-                 numEps=10,
-                 competeEps=10,
+    def __init__(self, numIters=1,
+                 numEps=1000,
+                 competeEps=100,
                  threshold=0.55,
                  height=11,
                  width=11,
@@ -81,7 +81,7 @@ class AlphaSnakeZeroTrainer:
                 nnet = new_nnet
                 print("Iteration", iter, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
             else:
-                print("Iteration", iter, "failed to beat the previouse one.\n")
+                print("Iteration", iter, "failed to beat the previouse one. WR =", frac_win, "\n")
         return nnet
 
     def train(self):
@@ -105,9 +105,14 @@ class AlphaSnakeZeroTrainer:
         for i in range(sep, self.player_cnt):
             agents[i] = Agent(nnet2)
         win = 0
+        loss = 0
         for _ in range(self.competeEps):
             g = Game(self.height, self.width, self.player_cnt)
             winner = g.run(agents)
-            if winner and winner < sep:
+            if winner is None:
+                pass
+            elif winner < sep:
                 win += 1
-        return win/self.competeEps
+            else:
+                loss += 1
+        return win/(win + loss)
