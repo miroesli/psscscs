@@ -3,7 +3,6 @@ import os
 import random
 import bottle
 
-from numpy import array
 from api import ping_response, start_response, move_response, end_response
 from utils.data_to_state import translate
 from utils.alphaNNet import AlphaNNet
@@ -62,8 +61,6 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-    #this kinda banks on the fact that returned array is equivalent to the directions mapping below
-    #pred = list(snake.pi(translate(data)[0])) 
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
@@ -73,10 +70,9 @@ def move():
     directions = ['up', 'down', 'left', 'right']
     #direction = random.choice(directions)
    
-    #add agent moves if training 
+    #TODO: add agent moves if training 
 
     return {
-        #'move': directions[pred.index(min(pred))],
         'move': directions[snake.make_move(translate(data)[0])],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
