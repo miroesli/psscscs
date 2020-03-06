@@ -6,6 +6,7 @@ import bottle
 from api import ping_response, start_response, move_response, end_response
 from data_to_state import translate
 
+
 @bottle.route('/')
 def index():
     return '''
@@ -63,12 +64,12 @@ def move():
             snake AI must choose a direction to move in.
     """
     print(json.dumps(data))
-    
+
     y = data['you']['body'][0]['y']
     x = data['you']['body'][0]['x']
-    
+
     state = translate(data)
-    
+
     ds = [0] * 4
 
     if y > 0:
@@ -89,13 +90,21 @@ def move():
     if x < len(state[0][0]) - 1:
         for board in state:
             ds[3] += board[y][x + 1]
-    else:
-        ds[3] = 1000
-    
-    directions = ['up', 'down', 'left', 'right']
-    direction = directions[ds.index(min(ds))]
 
-    return move_response(direction)
+
+<< << << < HEAD: app/models/NonMLsnake.py
+else:
+    ds[3] = 100
+
+== == == =
+else:
+    ds[3] = 1000
+
+>>>>>> > origin/dev: app/NonMLsnake.py
+directions = ['up', 'down', 'left', 'right']
+direction = directions[ds.index(min(ds))]
+
+return move_response(direction)
 
 
 @bottle.post('/end')

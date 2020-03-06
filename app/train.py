@@ -1,71 +1,62 @@
-numIters = 100
-numEps = 1
-competeEps = 1000
-threshold = 0.55
-height = 11
-width = 11
-player_cnt = 8
-food_spawn_period = 0
+import json
+import sys
+# import os
 
-from numpy import array
+from algs import *
 
-from AlphaNNet import AlphaNNet
-from game import Game
-from agent import Agent
+# from algs.neuralnet import Neuralnet
+# from algs.template import Template
 
-# https://web.stanford.edu/~surag/posts/alphazero.html
-def train(nnet):
-    # for training, all agents uses the same nnet
-    # unless we want to use a evolution algorithm
-    agents = [Agent(nnet, training = True) for _ in range(player_cnt)]
-    for i in range(numIters):
-        X = []
-        Y = []
-        # the loop below can use distributed computing
-        for e in range(numEps):
-            # collect examples from a new game
-            g = Game(height, width, player_cnt, player_cnt, food_spawn_period)
-            winner_id = g.run(agents)
-            for i in range(len(agents)):
-                agent = agents[i]
-                X += agent.records
-                # fix this
-                if i == winner_id:
-                    pass
-                else:
-                    pass
-                agent.clear()
-        new_nnet = nnet.copy()
-        new_nnet.train(array(X), array(Y))
-        # compare new net with previous net
-        frac_win = compete(new_nnet, nnet)
-        if frac_win > threshold:
-            # replace with new net
-            nnet = new_nnet
-            print("Iteration", i, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
-        else:
-            print("Iteration", i, "failed to beat the previouse one.\n")
-    return nnet
+DEFAULT_TRAIN_CONFIG_PATH = "./settings/train_params"
+DEFAULT_ALGS_PATH = "./algs/"
+VERBOSE = True
 
-def compete(nnet1, nnet2):
-    agents = [None] * player_cnt
-    sep = player_cnt//2
-    for i in range(sep):
-        agents[i] = Agent(nnet1)
-    for i in range(sep, player_cnt):
-        agents[i] = Agent(nnet2)
-    wins = 0
-    for _ in range(competeEps):
-        g = Game(height, width, player_cnt, player_cnt, food_spawn_period)
-        if g.run(agents) < sep:
-            wins += 1
-    return win/competeEps
 
-if __name__ == '__main__':
-    nnet = AlphaNNet(in_shape = (player_cnt, height, width))
-    num = 0
-    while 1:
-        num += 1
-        nnet = train(nnet)
-        # need to store the nnet
-        nnet.save("Network No." + str(num))
+def usage():
+    print("Usage: python train.py [path/to/config/file] trial_name")
+
+
+def main():
+    # check if there is an input file
+    if len(sys.argv) > 3 or len(sys.argv) < 2:
+        print("Incorrect usage...")
+        usage()
+        exit(0)
+
+    if len(sys.argv) == 3:
+        # parse the input json file and run the associated training alg
+        try:
+            with open(sys.argv[1]+".json", "r") as config_file:
+                config = json.load(config_file)
+        except FileNotFoundError:
+            print("No configuration file found. Using default.")
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
+        trial = sys.argv[2]
+    else:
+        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            config = json.load(config_file)
+        trial = sys.argv[1]
+
+    if VERBOSE:
+        config = config[trial]
+        print('config:', dict(**config))
+
+    try:
+        algorithm = config['algorithm']
+    except Exception:
+        print("Missing algorithm parameter")
+        exit(0)
+
+    if algorithm == 'neuralnet':
+        alg = neuralnet(**config)
+    else:
+        alg = template(**config)
+
+    alg.train()
+
+    # TODO: store the trained model in models folder
+
+
+if __name__ == "__main__":
+    main()

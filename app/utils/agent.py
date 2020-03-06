@@ -1,14 +1,14 @@
 from numpy import array
 
-# The Contingency 0.1
+
 class Agent:
 
-    def __init__(self, nnet, training = False):
+    def __init__(self, nnet, training=False):
         self.nnet = nnet
         self.training = training
         self.records = []
         self.policies = []
-    
+
     def make_move(self, state):
         X = array(state)
         values = self.nnet.pi(X)
@@ -19,7 +19,7 @@ class Agent:
             # record the policy calculated by the network
             self.policies.append(values)
         return move
-    
+
     def clear(self):
         self.records = []
         self.policies = []

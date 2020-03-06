@@ -1,7 +1,7 @@
 from random import sample, choice, random
 from numpy import array
 
-from snake import Snake
+from utils.snake import Snake
 
 max_snakes = 8
 EMPTY = 0.5
@@ -11,49 +11,56 @@ HUNGER_a = -101
 HUNGER_m = 0.005
 SNAKE_m = 0.005
 
+
 class Game:
-    
+
     def __init__(self, height, width, snake_cnt, initial_food, food_spawn_period):
-        
+
         assert snake_cnt <= max_snakes
-        
+
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
         # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/create.go
         positions = [
             (1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
-            (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
+            (1, width//2), (height//2, width -
+                            2), (height - 2, width//2), (height//2, 1)
         ]
-        
+
         # I changed the data structure to speed up the game
         # empty_positions is used to generate food randomly
-        self.empty_positions = {(y, x) for y in range(height) for x in range(width)}
-        
+        self.empty_positions = {(y, x) for y in range(height)
+                                for x in range(width)}
+
         self.height = height
         self.width = width
         self.food_spawn_period = food_spawn_period
-        
-        self.snakes = {Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)}
+
+        self.snakes = {Snake(ID, 100, [positions[ID]] * 3)
+                       for ID in range(snake_cnt)}
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
-        
+
         self.food = set(sample(self.empty_positions, initial_food))
         for food in self.food:
             self.empty_positions.remove(food)
-        
+
         # two board sets are used to reduce run time
         self.heads = {snake.body[0]: {snake} for snake in self.snakes}
-        self.bodies = {snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
-        
+        self.bodies = {
+            snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
+
         # the game stores the current state
-        self.state = array([[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)])
+        self.state = array([[[EMPTY] * width for row in range(height)]
+                            for layer in range(max_snakes)])
         # make a state for each snake (just a reference list)
-        self.states = [[board for board in self.state] for _ in range(snake_cnt)]
+        self.states = [[board for board in self.state]
+                       for _ in range(snake_cnt)]
         for i in range(1, snake_cnt):
             temp = self.states[i][0]
             self.states[i][0] = self.states[i][i]
             self.states[i][i] = temp
-        
+
         for snake in self.snakes:
             board = self.state[snake.id]
             dist = len(snake.body)
@@ -61,7 +68,8 @@ class Game:
                 board[b[0]][b[1]] += dist * SNAKE_m
                 dist -= 1
             for food in self.food:
-                board[food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
+                board[food[0]][food[1]] = EMPTY + \
+                    (snake.health + HUNGER_a) * HUNGER_m
 
     # game rules
     # https://github.com/BattlesnakeOfficial/rules/blob/master/standard.go
@@ -89,13 +97,14 @@ class Game:
         '''
 
         spawn_counter = 0
-        
+
         # game procedures
         while len(snakes) > 1:
-            
+
             # ask for moves
             for snake in snakes:
-                new_head, old_head, tail = snake.move(agents[snake.id].make_move(self.states[snake.id]))
+                new_head, old_head, tail = snake.move(
+                    agents[snake.id].make_move(self.states[snake.id]))
                 # update board sets
                 try:
                     # several heads might come to the same cell
@@ -114,7 +123,7 @@ class Game:
                     self.bodies.remove(tail)
                     self.empty_positions.add(tail)
                     self.state[snake.id][tail[0]][tail[1]] = EMPTY
-            
+
             # reduce health
             for snake in snakes:
                 snake.health -= 1
@@ -136,7 +145,7 @@ class Game:
                 # the snake's head will be recovered at the end of each turn
                 for board in self.state:
                     board[food[0]][food[1]] = EMPTY
-            
+
             # spawn food
             if self.food_spawn_period <= 0:
                 food_to_add = len(remove_food)
@@ -155,13 +164,14 @@ class Game:
                         self.food.add(food)
                         self.empty_positions.remove(food)
                         for snake in self.snakes:
-                            self.state[snake.id][food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
+                            self.state[snake.id][food[0]][food[1]] = EMPTY + \
+                                (snake.health + HUNGER_a) * HUNGER_m
                 except IndexError:
                     # Cannot choose from an empty set
                     pass
             else:
                 spawn_counter += 1
-            
+
             # remove dead snakes
             # I have checked the code of the battlesnake game
             # their algorithm for checking collisions is shit
@@ -219,7 +229,7 @@ class Game:
                 for food in self.food:
                     self.state[snake.id][food[0]][food[1]] = EMPTY
                 snakes.remove(snake)
-            
+
             # update the state
             for snake in self.snakes:
                 board = self.state[snake.id]
