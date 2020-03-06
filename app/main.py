@@ -66,17 +66,20 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    #print(json.dumps(data))
+    print(json.dumps(data))
 
     # with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     #    config = json.load(config_file)
 
-    # TODO: obtain direction from specified model in the models folder
-
+    # TODO: figure out where I'm passing 15x15x8 dataset to get prediction, currently only 15x15 is used  
+ 
     directions = ['up', 'down', 'left', 'right']
     #direction = random.choice(directions)
 
-    return directions[pred.index(min(pred))]
+    return {
+        'move': directions[pred.index(min(pred))],
+        'shout': 'import time;print("\U0001F635");time.sleep(10);'
+    }
     #return move_response(direction)
 
 
@@ -84,7 +87,7 @@ def move():
 def end():
     data = bottle.request.json
     #TODO: train snake based on match result
-    snake.save('current')
+    snake.save(config['model'])
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
@@ -96,7 +99,10 @@ def end():
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
-snake = AlphaNNet(model='current', in_shape=[15, 15])
+#This config file should contain the saved/desired model name, and additional parameters
+with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
+    config = json.load(config_file)
+snake = AlphaNNet(config=config, in_shape=[15, 15])
 
 if __name__ == '__main__':
     bottle.run(

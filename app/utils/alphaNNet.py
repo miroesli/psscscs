@@ -5,7 +5,10 @@ models_fp = 'data/'
 
 class AlphaNNet:
 
-    def __init__(self, model=None, in_shape=None):
+    def __init__(self, config=None, in_shape=None):
+        if not config:
+            config = {'model': 'current', 'optimizer': 'sgd'}
+        model = config['model']
         try:
         #if model:
             self.nnet = ks.models.load_model(models_fp + model)
@@ -22,7 +25,7 @@ class AlphaNNet:
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
-                optimizer = 'sgd',
+                optimizer = config['optimizer'],#'sgd',
                 loss = ks.losses.CategoricalCrossentropy()
             )
         
