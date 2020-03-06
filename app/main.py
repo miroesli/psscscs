@@ -3,9 +3,11 @@ import os
 import random
 import bottle
 
+from numpy import array
 from api import ping_response, start_response, move_response, end_response
 from utils.data_to_state import translate
 from utils.alphaNNet import AlphaNNet
+from utils.agent import Agent
 
 DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
 
@@ -61,23 +63,21 @@ def start():
 def move():
     data = bottle.request.json
     #this kinda banks on the fact that returned array is equivalent to the directions mapping below
-    pred = list(snake.pi(translate(data)[0])) 
+    #pred = list(snake.pi(translate(data)[0])) 
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
+    #print(json.dumps(data))
 
-    # with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
-    #    config = json.load(config_file)
-
-    # TODO: figure out where I'm passing 15x15x8 dataset to get prediction, currently only 15x15 is used  
- 
     directions = ['up', 'down', 'left', 'right']
     #direction = random.choice(directions)
+   
+    #add agent moves if training 
 
     return {
-        'move': directions[pred.index(min(pred))],
+        #'move': directions[pred.index(min(pred))],
+        'move': directions[snake.make_move(translate(data)[0])],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
     #return move_response(direction)
@@ -86,8 +86,12 @@ def move():
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-    #TODO: train snake based on match result
-    snake.save(config['model'])
+    #if t:
+    #    X = snake.records #will need to create per agent
+    #    Y = snake.policies
+    #    model.train(list(X), list(Y))
+    #snake.clear()
+    model.save(config['model'])
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
@@ -99,10 +103,14 @@ def end():
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
+
 #This config file should contain the saved/desired model name, and additional parameters
 with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     config = json.load(config_file)
-snake = AlphaNNet(config=config, in_shape=[15, 15])
+
+model = AlphaNNet(config=config, in_shape=[15, 15])
+t = True if config['train'] == 'True' else False #this would be if we want to train via this api also
+snake = Agent(nnet=model, training=t)
 
 if __name__ == '__main__':
     bottle.run(

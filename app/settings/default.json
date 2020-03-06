@@ -1,4 +1,5 @@
 {
     "model": "current",
-    "optimizer": "sgd"
+    "optimizer": "sgd",
+    "train": "False"
 }
