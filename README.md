@@ -6,7 +6,7 @@ Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 
   
 ## Run the snake  
-1. virtualenv  
+1. create the virtualenv  
 `python3 -m venv envs`  
 `source envs/bin/activate`  
 `pip install -r requirements.txt`  

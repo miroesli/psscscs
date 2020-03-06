@@ -9,7 +9,7 @@ from utils.alphaNNet import AlphaNNet
 from utils.agent import Agent
 
 DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
-
+VERBOSE = True
 
 @bottle.route('/')
 def index():
@@ -47,7 +47,8 @@ def start():
             initialize your snake state here using the
             request's data if necessary.
     """
-    print(json.dumps(data))
+    if VERBOSE:
+        print(json.dumps(data))
 
     # See https://docs.battlesnake.com/snake-customization for customizations
 
@@ -65,34 +66,28 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    #print(json.dumps(data))
+    if VERBOSE:
+        print(json.dumps(data))
 
     directions = ['up', 'down', 'left', 'right']
-    #direction = random.choice(directions)
    
-    #TODO: add agent moves if training 
+    #TODO: add agent moves, if training 
 
     return {
         'move': directions[snake.make_move(translate(data)[0])],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
-    #return move_response(direction)
-
 
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-    #if t:
-    #    X = snake.records #will need to create per agent
-    #    Y = snake.policies
-    #    model.train(list(X), list(Y))
-    #snake.clear()
     model.save(config['model'])
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
     """
-    print(json.dumps(data))
+    if VERBOSE:
+        print(json.dumps(data))
 
     return end_response()
 
