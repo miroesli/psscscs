@@ -5,15 +5,16 @@ models_fp = 'models/'
 
 class AlphaNNet:
 
-    def __init__(self, config=None, in_shape=None):
-        if not config:
-            config = {'model': 'current', 'optimizer': 'sgd'}
-        model = config['model']
+    def __init__(self, 
+        model='default',
+        optimizer='sgd',
+        loss=ks.losses.CategoricalCrossentropy(),
+        in_shape=[15, 15],
+        **config):
+
         try:
-        #if model:
             self.nnet = ks.models.load_model(models_fp + model)
         except IOError: #file not found
-        #elif in_shape:
             size = 1
             for i in range(1, len(in_shape)):
                 size *= in_shape[i]
@@ -25,8 +26,8 @@ class AlphaNNet:
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
-                optimizer = config['optimizer'],#'sgd',
-                loss = ks.losses.CategoricalCrossentropy()
+                optimizer = optimizer,
+                loss = loss
             )
         
     def train(self, X, Y):
