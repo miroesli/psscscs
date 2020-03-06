@@ -53,7 +53,7 @@ class AlphaSnakeZeroTrainer:
                             boost = 0
                             for k in range(4):
                                 if k != index:
-                                    decay[k] = agent.policies[j][k]*(j + 1)/step
+                                    decay[k] = agent.policies[j][k]*(1 - (j + 1)/step)
                                     boost += decay[k]
                             for k in range(4):
                                 if k == index:
@@ -63,7 +63,7 @@ class AlphaSnakeZeroTrainer:
                     else:
                         for j in range(step):
                             index = agent.moves[j]
-                            decay = agent.policies[j][index]*(j + 1)/step
+                            decay = agent.policies[j][index]*(1 - (j + 1)/step)
                             boost = decay/3
                             for k in range(4):
                                 if k == index:
