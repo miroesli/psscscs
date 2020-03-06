@@ -1,11 +1,12 @@
 from utils.agent import Agent
 from utils.game import Game
 from utils.AlphaNNet import AlphaNNet
+import numpy as np
 
 # https://web.stanford.edu/~surag/posts/alphazero.html
 
 
-class neuralnet_trainer:
+class AlphaZeroTrainer:
     def __init__(self, numIters=100000,
                  numEps=1000,
                  competeEps=100,
@@ -15,7 +16,7 @@ class neuralnet_trainer:
                  player_cnt=8,
                  food_spawn_period=0,
                  **config):
-
+        print(type(numIters))
         self.numIters = numIters
         self.numEps = numEps
         self.competeEps = competeEps
@@ -25,7 +26,7 @@ class neuralnet_trainer:
         self.player_cnt = player_cnt
         self.food_spawn_period = food_spawn_period
 
-    def train_alpha(nnet):
+    def train_alpha(self, nnet):
         # for training, all agents uses the same nnet
         # unless we want to use a evolution algorithm
         agents = [Agent(nnet, training=True) for _ in range(self.player_cnt)]
@@ -41,14 +42,13 @@ class neuralnet_trainer:
                 for i in range(len(agents)):
                     agent = agents[i]
                     X += agent.records
-                    # fix this
                     if i == winner_id:
-                        pass
+                        pass    # TODO
                     else:
-                        pass
+                        pass    # TODO
                     agent.clear()
             new_nnet = nnet.copy()
-            new_nnet.train(array(X), array(Y))
+            new_nnet.train(np.array(X), np.array(Y))
             # compare new net with previous net
             frac_win = compete(new_nnet, nnet)
             if frac_win > threshold:
@@ -61,15 +61,15 @@ class neuralnet_trainer:
         return nnet
 
     def train(self):
-        nnet = AlphaNNet(in_shape=(player_cnt, height, width))
+        nnet = AlphaNNet(in_shape=(self.player_cnt, self.height, self.width))
         num = 0
         while 1:
             num += 1
-            nnet = train_alpha(nnet)
+            nnet = self.train_alpha(nnet)
             # need to store the nnet
             nnet.save("Network No." + str(num))
 
-    def compete(nnet1, nnet2):
+    def compete(self, nnet1, nnet2):
         agents = [None] * self.player_cnt
         sep = self.player_cnt//2
         for i in range(sep):
@@ -81,4 +81,4 @@ class neuralnet_trainer:
             g = Game(self.height, self.width, self.player_cnt)
             if g.run(agents) < sep:
                 wins += 1
-        return win/self.competeEps
+        return wins/self.competeEps
