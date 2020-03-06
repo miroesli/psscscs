@@ -4,12 +4,12 @@
         "iterations": 500
     },
     "trial_1": {
-        "algorithm": "AlphaZero",
+        "algorithm": "AlphaSnakeZero",
         "numIters": 10000,
         "threshold": 0.6
     },
     "trial_2": {
-        "algorithm": "AlphaZero",
+        "algorithm": "AlphaSnakeZero",
         "numIters": 2000
     }
 }

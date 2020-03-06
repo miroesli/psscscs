@@ -13,8 +13,8 @@ class AlphaNNet:
             self.in_shape = in_shape
             self.nnet = ks.Sequential([
                 ks.layers.Flatten(input_shape = in_shape),
-                ks.layers.Dense(size, activation = 'relu'),
-                ks.layers.Dense(size, activation = 'relu'),
+                ks.layers.Dense(size//8, activation = 'relu'),
+                ks.layers.Dense(size//121, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(

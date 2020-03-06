@@ -47,8 +47,8 @@ def main():
         exit(0)
 
     alg = Template(**config)
-    if algorithm == 'AlphaZero':
-        alg = AlphaZeroTrainer(**config)
+    if algorithm == 'AlphaSnakeZero':
+        alg = AlphaSnakeZeroTrainer(**config)
 
     alg.train() # The train function will save the neural network in the models/ folder and we'll be done.
 

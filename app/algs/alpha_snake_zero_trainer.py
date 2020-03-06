@@ -7,7 +7,7 @@ from utils.alphaNNet import AlphaNNet
 # https://web.stanford.edu/~surag/posts/alphazero.html
 
 
-class neuralnet_trainer:
+class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=1,
                  numEps=10,

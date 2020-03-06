@@ -1,4 +1,4 @@
-from algs.alphazero import *
+from algs.alpha_snake_zero_trainer import *
 from algs.template import *
 
 # TODO: Get algs to import classes automatically
