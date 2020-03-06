@@ -90,21 +90,13 @@ def move():
     if x < len(state[0][0]) - 1:
         for board in state:
             ds[3] += board[y][x + 1]
+    else:
+        ds[3] = 1000
+    
+    directions = ['up', 'down', 'left', 'right']
+    direction = directions[ds.index(min(ds))]
 
-
-<< << << < HEAD: app/models/NonMLsnake.py
-else:
-    ds[3] = 100
-
-== == == =
-else:
-    ds[3] = 1000
-
->>>>>> > origin/dev: app/NonMLsnake.py
-directions = ['up', 'down', 'left', 'right']
-direction = directions[ds.index(min(ds))]
-
-return move_response(direction)
+    return move_response(direction)
 
 
 @bottle.post('/end')
