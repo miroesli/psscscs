@@ -21,9 +21,10 @@ class Game:
         # battlesnake uses random positions for any non-standard board size
         # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/create.go
         positions = sample(
-            [(1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
-             (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
-             ],
+            [
+                (1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
+                 (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
+            ],
             snake_cnt)
         
         # I changed the data structure to speed up the game
