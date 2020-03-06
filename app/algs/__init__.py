@@ -1,4 +1,4 @@
-from algs.neuralnet import *
+from algs.neuralnet_trainer import *
 from algs.template import *
 
 # TODO: Get algs to import classes automatically

@@ -51,8 +51,8 @@ class Game:
             snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
 
         # the game stores the current state
-        self.state = array([[[EMPTY] * width for row in range(height)]
-                            for layer in range(max_snakes)])
+        self.state = [[[EMPTY] * width for row in range(height)]
+                            for layer in range(max_snakes)]
         # make a state for each snake (just a reference list)
         self.states = [[board for board in self.state]
                        for _ in range(snake_cnt)]

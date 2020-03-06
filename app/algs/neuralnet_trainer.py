@@ -1,6 +1,6 @@
 from utils.agent import Agent
 from utils.game import Game
-from utils.AlphaNNet import AlphaNNet
+from utils.alphaNNet import AlphaNNet
 
 # https://web.stanford.edu/~surag/posts/alphazero.html
 
