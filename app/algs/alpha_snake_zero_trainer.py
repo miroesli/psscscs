@@ -11,7 +11,7 @@ class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=10,
                  numEps=10,
-                 competeEps=100,
+                 competeEps=10,
                  threshold=0.55,
                  height=11,
                  width=11,
@@ -79,9 +79,9 @@ class AlphaSnakeZeroTrainer:
             if frac_win > self.threshold:
                 # replace with new net
                 nnet = new_nnet
-                print("Iteration", i, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
+                print("Iteration", iter, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
             else:
-                print("Iteration", i, "failed to beat the previouse one.\n")
+                print("Iteration", iter, "failed to beat the previouse one.\n")
         return nnet
 
     def train(self):
