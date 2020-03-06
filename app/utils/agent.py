@@ -18,11 +18,11 @@ class Agent:
         if self.training:
             # in reverse order
             # record the game state for traininig
-            self.records.insert(0, X)
+            self.records.append(X)
             # record the policy calculated by the network
-            self.policies.insert(0, values)
+            self.policies.append(values)
             # record the move made
-            self.moves.insert(0, move)
+            self.moves.append(move)
         return move
 
     def clear(self):
