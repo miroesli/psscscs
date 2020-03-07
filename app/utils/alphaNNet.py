@@ -1,12 +1,20 @@
 from tensorflow import keras as ks
 from numpy import array
 
+models_fp = 'models/'
+
 class AlphaNNet:
 
-    def __init__(self, model=None, in_shape=None):
-        if model:
-            self.nnet = ks.models.load_model(model)
-        elif in_shape:
+    def __init__(self, 
+        model='default',
+        optimizer='sgd',
+        loss=ks.losses.CategoricalCrossentropy(),
+        in_shape=[15, 15],
+        **config):
+
+        try:
+            self.nnet = ks.models.load_model(models_fp + model)
+        except IOError: #file not found
             size = 1
             for i in range(1, len(in_shape)):
                 size *= in_shape[i]
@@ -18,8 +26,8 @@ class AlphaNNet:
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
-                optimizer = 'sgd',
-                loss = ks.losses.CategoricalCrossentropy()
+                optimizer = optimizer,
+                loss = loss
             )
         
     def train(self, X, Y):
@@ -40,4 +48,4 @@ class AlphaNNet:
         return nnet_copy
     
     def save(self, name):
-        self.nnet.save(name + '.h5')
+        self.nnet.save(models_fp + name + '.h5')

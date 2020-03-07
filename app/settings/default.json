@@ -1,3 +1,4 @@
 {
-    "model": "neuralnet"
+    "model": "default",
+    "train": false 
 }

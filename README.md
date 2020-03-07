@@ -4,6 +4,20 @@ A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
 Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 **S**cience undergrads.
 
+  
+## Run the snake  
+1. create the virtualenv  
+`python3 -m venv envs`  
+`source envs/bin/activate`  
+`pip install -r requirements.txt`  
+2. Run the server  
+`cd app`  
+`python main.py`  
+3. ??  
+  
+## Project specific info  
+Currently a 3 layer nn is used for prediction. While 8 layers are derived from the input, AlphaGo is not being utilized, need to do this.  
+
 Visit [https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md](https://github.com/BattlesnakeOfficial/community/blob/master/starter-snakes.md) for API documentation and instructions for running your AI.
 
 This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/index.html) to serve requests and the [gunicorn web server](http://gunicorn.org/) for running bottle on Heroku. Dependencies are listed in [requirements.txt](requirements.txt).
