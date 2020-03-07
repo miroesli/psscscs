@@ -99,7 +99,7 @@ application = bottle.default_app()
 with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     config = json.load(config_file)
 
-model = AlphaNNet(config=config)
+model = AlphaNNet(**config)
 t = config['train'] #this would be if we want to train via this api also
 snake = Agent(nnet=model, training=t)
 
