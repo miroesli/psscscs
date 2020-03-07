@@ -8,7 +8,7 @@ from utils.alphaNNet import AlphaNNet
 
 
 class AlphaSnakeZeroTrainer:
-    
+
     def __init__(self, numIters=1,
                  numEps=1000,
                  competeEps=100,
@@ -53,7 +53,8 @@ class AlphaSnakeZeroTrainer:
                             boost = 0
                             for k in range(4):
                                 if k != index:
-                                    decay[k] = agent.policies[j][k]*(j + 1)/step
+                                    decay[k] = agent.policies[j][k] * \
+                                        (j + 1)/step
                                     boost += decay[k]
                             for k in range(4):
                                 if k == index:
@@ -79,16 +80,19 @@ class AlphaSnakeZeroTrainer:
             if frac_win > self.threshold:
                 # replace with new net
                 nnet = new_nnet
-                print("Iteration", iter, "beats the previouse version with a WR of", frac_win, "\nIt is now the new champion!\n")
+                print("Iteration", iter, "beats the previouse version with a WR of",
+                      frac_win, "\nIt is now the new champion!\n")
             else:
-                print("Iteration", iter, "failed to beat the previouse one. WR =", frac_win, "\n")
+                print("Iteration", iter,
+                      "failed to beat the previouse one. WR =", frac_win, "\n")
         return nnet
 
     def train(self):
         if self.model:
             nnet = AlphaNNet(model=self.model)
         else:
-            nnet = AlphaNNet(in_shape=(self.player_cnt, self.height, self.width))
+            nnet = AlphaNNet(
+                in_shape=(self.player_cnt, self.height, self.width))
         model_num = 0
         while 1:
             model_num += 1
