@@ -11,6 +11,7 @@ from utils.agent import Agent
 DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
 VERBOSE = True
 
+
 @bottle.route('/')
 def index():
     return '''
@@ -70,13 +71,14 @@ def move():
         print(json.dumps(data))
 
     directions = ['up', 'down', 'left', 'right']
-   
-    #TODO: add agent moves, if training 
+
+    # TODO: add agent moves, if training
 
     return {
         'move': directions[snake.make_move(translate(data)[0])],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
+
 
 @bottle.post('/end')
 def end():
@@ -95,12 +97,12 @@ def end():
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
 
-#This config file should contain the saved/desired model name, and additional parameters
+# This config file should contain the saved/desired model name, and additional parameters
 with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     config = json.load(config_file)
 
 model = AlphaNNet(**config)
-t = config['train'] #this would be if we want to train via this api also
+t = config['train']  # this would be if we want to train via this api also
 snake = Agent(nnet=model, training=t)
 
 if __name__ == '__main__':
