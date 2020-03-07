@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, argmax
 from numpy.random import choice
 
 
@@ -14,8 +14,8 @@ class Agent:
     def make_move(self, state):
         X = array(state)
         values = self.nnet.pi(X)
-        move = choice([0, 1, 2, 3], p=values)
         if self.training:
+            move = choice([0, 1, 2, 3], p=values)
             # in reverse order
             # record the game state for traininig
             self.records.append(X)
@@ -23,6 +23,8 @@ class Agent:
             self.policies.append(values)
             # record the move made
             self.moves.append(move)
+        else:
+            move = argmax(values)
         return move
 
     def clear(self):

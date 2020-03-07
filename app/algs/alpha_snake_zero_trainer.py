@@ -1,5 +1,7 @@
 from numpy import array, argmax
 
+from time import time
+
 from utils.agent import Agent
 from utils.game import Game
 from utils.alphaNNet import AlphaNNet
@@ -9,7 +11,7 @@ from utils.alphaNNet import AlphaNNet
 
 class AlphaSnakeZeroTrainer:
     
-    def __init__(self, numIters=1,
+    def __init__(self, numIters=10,
                  numEps=100,
                  competeEps=100,
                  threshold=0.55,
@@ -35,6 +37,7 @@ class AlphaSnakeZeroTrainer:
         for iter in range(self.numIters):
             X = []
             Y = []
+            t0 = time()
             # the loop below can use distributed computing
             for ep in range(self.numEps):
                 # collect examples from a new game
@@ -46,36 +49,33 @@ class AlphaSnakeZeroTrainer:
                     # assign estimated policies
                     # this substitutes the MCTS
                     step = len(agent.policies)
-                    print(agent.policies[j])
                     if i == winner_id:
-                        print("winner")
                         for j in range(step):
-                            index = agent.moves[j]
+                            move = agent.moves[j]
                             decay = [0] * 4
                             boost = 0
                             for k in range(4):
-                                if k != index:
+                                if k != move:
                                     decay[k] = agent.policies[j][k]*(j + 1)/step
                                     boost += decay[k]
                             for k in range(4):
-                                if k == index:
+                                if k == move:
                                     agent.policies[j][k] += boost
                                 else:
                                     agent.policies[j][k] -= decay[k]
                     else:
-                        print("losser")
                         for j in range(step):
-                            index = agent.moves[j]
-                            decay = agent.policies[j][index]*(j + 1)/step
+                            move = agent.moves[j]
+                            decay = agent.policies[j][move]*(j + 1)/step
                             boost = decay/3
                             for k in range(4):
-                                if k == index:
+                                if k == move:
                                     agent.policies[j][k] -= decay
                                 else:
                                     agent.policies[j][k] += boost
-                    print(agent.policies[j])
                     Y += agent.policies
                     agent.clear()
+            print("running time", time() - t0)
             new_nnet = nnet.copy()
             new_nnet.train(array(X), array(Y))
             # compare new net with previous net

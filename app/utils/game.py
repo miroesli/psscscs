@@ -23,7 +23,7 @@ class Game:
         positions = sample(
             [
                 (1, 1), (height - 2, width - 2), (height - 2, 1), (1, width - 2),
-                 (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
+                (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
             ],
             snake_cnt)
         

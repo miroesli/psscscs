@@ -13,17 +13,19 @@ class AlphaNNet:
             self.in_shape = in_shape
             self.nnet = ks.Sequential([
                 ks.layers.Flatten(input_shape = in_shape),
+                ks.layers.Dense(size, activation = 'relu'),
                 ks.layers.Dense(size//8, activation = 'relu'),
+                ks.layers.Dense(size//11, activation = 'relu'),
                 ks.layers.Dense(size//121, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
-                optimizer = 'sgd',
+                optimizer = ks.optimizers.SGD(),
                 loss = ks.losses.CategoricalCrossentropy()
             )
-        
-    def train(self, X, Y):
-        self.nnet.fit(X, Y)
+    
+    def train(self, X, Y, epochs = 10):
+        self.nnet.fit(X, Y, epochs = epochs)
     
     def pi(self, X):
         return self.nnet.predict(array([X]))[0]
@@ -33,9 +35,9 @@ class AlphaNNet:
         nnet_copy.nnet = ks.models.clone_model(self.nnet)
         nnet_copy.nnet.build(self.nnet.layers[0].input_shape)
         nnet_copy.nnet.compile(
-                optimizer = 'sgd',
-                loss = ks.losses.CategoricalCrossentropy()
-            )
+            optimizer = ks.optimizers.SGD(),
+            loss = ks.losses.CategoricalCrossentropy()
+        )
         nnet_copy.nnet.set_weights(self.nnet.get_weights())
         return nnet_copy
     
