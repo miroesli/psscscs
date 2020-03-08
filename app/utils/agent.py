@@ -1,32 +1,42 @@
 from numpy import array, argmax
 from numpy.random import choice
 
+EMPTY = 0.0
+WALL = 1.0
+# adders & mutipliers
+# (value + value_a) * value_m
+HUNGER_a = -101
+HUNGER_m = 0.01
+SNAKE_m = 0.01
+
 
 class Agent:
-
-    def __init__(self, nnet, training=False):
+    
+    def __init__(self, nnet, snake_ids, training=False):
         self.nnet = nnet
         self.training = training
-        self.records = []
-        self.policies = []
-        self.moves = []
-
-    def make_move(self, state):
-        X = array(state)
-        values = self.nnet.pi(X)
+        self.records = {i:[] for i in snake_ids}
+        self.policies = {i:[] for i in snake_ids}
+        self.moves = {i:[] for i in snake_ids}
+    
+    def make_moves(self, states, snake_ids):
+        X = array(states)
+        Y = self.nnet.pi(X)
         if self.training:
-            move = choice([0, 1, 2, 3], p=values)
-            # in reverse order
-            # record the game state for traininig
-            self.records.append(X)
-            # record the policy calculated by the network
-            self.policies.append(values)
-            # record the move made
-            self.moves.append(move)
+            moves = [choice([0, 1, 2, 3], p=y) for y in Y]
+            for i in range(len(states)):
+                # record the game state for traininig
+                self.records[snake_ids[i]].append(X[i])
+                # record the policy calculated by the network
+                self.policies[snake_ids[i]].append(Y[i])
+                # record the move made
+                self.moves[snake_ids[i]].append(moves[i])
         else:
-            move = argmax(values)
-        return move
-
+            moves = [argmax(y) for y in Y]
+        return moves
+    
     def clear(self):
-        self.records = []
-        self.policies = []
+        for i in self.records:
+            self.records[i] = []
+            self.policies[i] = []
+            self.moves[i] = []

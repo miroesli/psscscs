@@ -2,20 +2,18 @@ from random import sample, choice, random
 
 from utils.snake import Snake
 
-max_snakes = 8
-EMPTY = 0.5
+WALL = 1.0
+MYHEAD = 0.0
 # adders & mutipliers
 # (value + value_a) * value_m
 HUNGER_a = -101
-HUNGER_m = 0.005
-SNAKE_m = 0.005
+HUNGER_m = 0.01
+SNAKE_m = 0.01
 
 
 class Game:
     
     def __init__(self, height, width, snake_cnt):
-        
-        assert snake_cnt <= max_snakes
         
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
@@ -33,8 +31,9 @@ class Game:
         
         self.height = height
         self.width = width
+        self.snake_cnt = snake_cnt
         
-        self.snakes = {Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)}
+        self.snakes = [Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)]
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
         
@@ -45,56 +44,54 @@ class Game:
         # two board sets are used to reduce run time
         self.heads = {snake.body[0]: {snake} for snake in self.snakes}
         self.bodies = {snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
-        
-        # the game stores the current state
-        self.state = [[[EMPTY] * width for row in range(height)] for layer in range(max_snakes)]
-        # make a state for each snake (just a reference list)
-        self.states = [[board for board in self.state] for _ in range(snake_cnt)]
-        for i in range(1, snake_cnt):
-            temp = self.states[i][0]
-            self.states[i][0] = self.states[i][i]
-            self.states[i][i] = temp
-        
-        for snake in self.snakes:
-            board = self.state[snake.id]
-            dist = len(snake.body)
-            for b in snake.body:
-                board[b[0]][b[1]] += dist * SNAKE_m
-                dist -= 1
-            for food in self.food:
-                board[food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
-
     # game rules
     # https://github.com/BattlesnakeOfficial/rules/blob/master/standard.go
     # this link below is what they use for the engine
     # they have defferent algorithms, resulting in different rules
     # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/tick.go
     # I am using the online version (first one)
-    def run(self, agents):
-        snakes = self.snakes
-        assert len(agents) == len(snakes)
-
-        '''
-        print("--------------------------- New Game ---------------------------\n")
-        show = [[0] * 11 for _ in range(11)]
-        for ID in range(len(self.state)):
-            for i in range(11):
-                for j in range(11):
-                    if self.state[ID][i][j] > 0.5:
-                        show[i][j] = ID + 1
-                    elif self.state[ID][i][j] < 0.5:
-                        show[i][j] = 9
-        for row in show:
-            print(row)
-        print()
-        '''
+    def run(self, Alice, Bob=None, sep=None):
+        if Bob:
+            snake_ids1 = list(range(sep))
+            snake_ids2 = list(range(sep, self.snake_cnt))
+        else:
+            snake_ids = list(range(self.snake_cnt))
         
+        snakes = self.snakes
         # game procedures
         while len(snakes) > 1:
             
             # ask for moves
+            if Bob:
+                # one set might be empty
+                # in that case the team with any snakes left wins
+                if len(snake_ids1) == 0:
+                    return snake_ids2[0]
+                if len(snake_ids2) == 0:
+                    return snake_ids1[0]
+                states1 = [self.make_state(snake) for snake in snakes if snake.id < sep]
+                states2 = [self.make_state(snake) for snake in snakes if snake.id >= sep]
+                moves1 = Alice.make_moves(states1, snake_ids1)
+                moves2 = Bob.make_moves(states2, snake_ids2)
+                i = 0
+                j = 0
+            else:
+                states = [self.make_state(snake) for snake in snakes]
+                moves = Alice.make_moves(states, snake_ids)
+                i = 0
+            
+            # execute moves
             for snake in snakes:
-                new_head, old_head, tail = snake.move(agents[snake.id].make_move(self.states[snake.id]))
+                if Bob:
+                    if snake.id < sep:
+                        new_head, old_head, tail = snake.move(moves1[i])
+                        i += 1
+                    else:
+                        new_head, old_head, tail = snake.move(moves2[j])
+                        j += 1
+                else:
+                    new_head, old_head, tail = snake.move(moves[i])
+                    i += 1
                 # update board sets
                 try:
                     # several heads might come to the same cell
@@ -112,7 +109,6 @@ class Game:
                 if tail:
                     self.bodies.remove(tail)
                     self.empty_positions.add(tail)
-                    self.state[snake.id][tail[0]][tail[1]] = EMPTY
             
             # reduce health
             for snake in snakes:
@@ -152,13 +148,10 @@ class Game:
                     # not out of bound and not into a body and not into a food
                     if head[0] >= 0 and head[0] < self.height and head[1] >= 0 and head[1] < self.width:
                         # head is in range
-                        self.state[snake.id][head[0]][head[1]] = EMPTY
-                        if head not in self.bodies and head not in food:
+                        if head not in self.bodies and head not in self.food:
                             self.empty_positions.add(head)
                 else:
                     self.heads[head].remove(snake)
-                    # there are more than one heads here, must be a head on or body collision and thus in range
-                    self.state[snake.id][head[0]][head[1]] = EMPTY
                 for i in range(1, len(snake.body)):
                     b = snake.body[i]
                     # it is possible that a snake has eaten on its first move and then die on its second move
@@ -168,24 +161,25 @@ class Game:
                     try:
                         self.bodies.remove(b)
                         self.empty_positions.add(b)
-                        self.state[snake.id][b[0]][b[1]] = EMPTY
                     except KeyError:
                         pass
-                # clear the state board
-                for food in self.food:
-                    self.state[snake.id][food[0]][food[1]] = EMPTY
                 snakes.remove(snake)
+                if Bob:
+                    if snake.id < sep:
+                        snake_ids1.remove(snake.id)
+                    else:
+                        snake_ids2.remove(snake.id)
+                else:
+                    snake_ids.remove(snake.id)
             
             # check for food eaten
             for snake in snakes:
                 if snake.body[0] in self.food:
                     food = snake.body[0]
                     self.food.remove(food)
-                    for board in self.state:
-                        board[food[0]][food[1]] = EMPTY
                     snake.health = 100
                     snake.grow()
-
+            
             # spawn food
             if len(self.food) == 0:
                 chance = 1.0
@@ -196,34 +190,59 @@ class Game:
                     food = choice(tuple(self.empty_positions))
                     self.food.add(food)
                     self.empty_positions.remove(food)
-                    for snake in self.snakes:
-                        self.state[snake.id][food[0]][food[1]] = EMPTY + (snake.health + HUNGER_a) * HUNGER_m
                 except IndexError:
                     # Cannot choose from an empty set
                     pass
-            
-            # update the state
-            for snake in self.snakes:
-                board = self.state[snake.id]
-                body = snake.body
-                dist = len(snake.body)
-                for b in snake.body:
-                    board[b[0]][b[1]] = EMPTY + dist * SNAKE_m
-                    dist -= 1
-
-            '''
-            show = [[0] * 11 for _ in range(11)]
-            for ID in range(len(self.state)):
-                for i in range(11):
-                    for j in range(11):
-                        if self.state[ID][i][j] > 0.5:
-                            show[i][j] = ID + 1
-                        elif self.state[ID][i][j] < 0.5:
-                            show[i][j] = 9
-            for row in show:
-                print(row)
-            print()
-            '''
-
+        
         # return the winner if there is one
         return tuple(snakes)[0].id if snakes else None
+    
+    def make_state(self, you):
+        """ Process the data and translate them into a grid
+        
+        Args:
+            you: a Snake object define by snake.py; represents this snake
+        
+        Return:
+            grid: a grid that represents the game
+        
+        """
+        
+        # gotta do the math to recenter the grid
+        width = self.width * 2 - 1
+        height = self.height * 2 - 1
+        grid = [[WALL] * width for row in range(height)]
+        center = (width//2, height//2)
+        # the original game board
+        # it's easier to work on the original board then transfer it onto the grid
+        board = [[0] * self.width for row in range(self.height)]
+        
+        # positions are (y, x) not (x, y)
+        # because you read the grid row by row, i.e. (row number, column number)
+        # otherwise the board is transposed
+        for food in self.food:
+            # I suppose a food is more wanted than an enmpty cell so let EMPTY be the base value
+            board[food[0]][food[1]] = (you.health + HUNGER_a) * HUNGER_m
+        
+        my_length = len(you.body)
+        for snake in self.snakes:
+            body = snake.body
+            # get head
+            board[body[0][0]][body[0][1]] = (len(body) - (my_length - 1)) * SNAKE_m
+            # get the rest of the body
+            dist = len(body)
+            # Don't do the body[1:] slicing. It will copy the list
+            for i in range(1, len(body)):
+                board[body[i][0]][body[i][1]] = dist * SNAKE_m
+                dist -= 1
+        
+        # get my head
+        head = you.body[0]
+        board[you.body[0][0]][you.body[0][1]] = MYHEAD
+        
+        # from this point, all positions are measured relative to our head
+        for y in range(self.height):
+            for x in range(self.width):
+                grid[y - head[0] + center[1]][x - head[1] + center[0]] = board[y][x]
+        
+        return grid
