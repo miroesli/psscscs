@@ -11,5 +11,13 @@
     "trial_2": {
         "algorithm": "AlphaSnakeZero",
         "numIters": 2000
+    },
+    "dqn_100": {
+        "algorithm": "dqn",
+        "numIters": 100
+    },
+    "dqn_1000": {
+        "algorithm": "dqn",
+        "numIters": 1000
     }
 }

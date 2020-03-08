@@ -3,6 +3,7 @@ import sys
 # import os
 
 from algs.alpha_snake_zero_trainer import AlphaSnakeZeroTrainer
+from algs.dqn import DQN
 from algs.template import Template
 
 DEFAULT_TRAIN_CONFIG_PATH = "./settings/train_params"
@@ -24,15 +25,15 @@ def main():
     if len(sys.argv) == 3:
         # parse the input json file and run the associated training alg
         try:
-            with open(sys.argv[1]+".json", "r") as config_file:
+            with open(sys.argv[1] + ".json", "r") as config_file:
                 config = json.load(config_file)
         except FileNotFoundError:
             print("No configuration file found. Using default.")
-            with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+            with open(DEFAULT_TRAIN_CONFIG_PATH + ".json", "r") as config_file:
                 config = json.load(config_file)
         trial = sys.argv[2]
     else:
-        with open(DEFAULT_TRAIN_CONFIG_PATH+".json", "r") as config_file:
+        with open(DEFAULT_TRAIN_CONFIG_PATH + ".json", "r") as config_file:
             config = json.load(config_file)
         trial = sys.argv[1]
 
@@ -48,6 +49,8 @@ def main():
 
     if algorithm == 'AlphaSnakeZero':
         alg = AlphaSnakeZeroTrainer(**config)
+    elif algorithm == 'dqn':
+        alg = DQN(**config)
     else:
         alg = Template(**config)
 
