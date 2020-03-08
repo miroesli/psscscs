@@ -12,12 +12,12 @@ from utils.alphaNNet import AlphaNNet
 class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=5,
-                 numEps=2000,
-                 competeEps=200,
+                 numEps=200,
+                 competeEps=100,
                  threshold=0.55,
                  height=11,
                  width=11,
-                 snake_cnt=8,
+                 snake_cnt=4,
                  model=None,
                  **config):
 
@@ -63,7 +63,7 @@ class AlphaSnakeZeroTrainer:
                                     Alice.policies[snake_id][j][k] += boost
                                 else:
                                     Alice.policies[snake_id][j][k] -= decay[k]
-                            gamma *= 0.8
+                            gamma *= 0.9
                     else:
                         for j in range(step):
                             move = Alice.moves[snake_id][j]
@@ -74,7 +74,7 @@ class AlphaSnakeZeroTrainer:
                                     Alice.policies[snake_id][j][k] -= decay
                                 else:
                                     Alice.policies[snake_id][j][k] += boost
-                            gamma *= 0.8
+                            gamma *= 0.9
                     Y += Alice.policies[snake_id]
                 Alice.clear()
             print("Self play time", time() - t0)
@@ -98,7 +98,7 @@ class AlphaSnakeZeroTrainer:
         if self.model:
             nnet = AlphaNNet(model=self.model)
         else:
-            nnet = AlphaNNet(in_shape=(self.height*2 - 1, self.width*2 - 1, 1))
+            nnet = AlphaNNet(in_shape=(self.height*2 - 1, self.width*2 - 1, 3))
         model_num = 0
         while 1:
             new_nnet = self.train_alpha(nnet)

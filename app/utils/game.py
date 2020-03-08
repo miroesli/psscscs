@@ -3,12 +3,10 @@ from random import sample, choice, random
 from utils.snake import Snake
 
 WALL = 1.0
-# adders & mutipliers
-# (value + value_a) * value_m
-HUNGER_a = -101
+# mutipliers
 HUNGER_m = 0.01
-SNAKE_m = 0.01
-SNAKE_h = 0.1
+SNAKE_m = 0.02
+HEAD_m = 0.04
 
 
 class Game:
@@ -211,38 +209,38 @@ class Game:
         # gotta do the math to recenter the grid
         width = self.width * 2 - 1
         height = self.height * 2 - 1
-        grid = [[WALL] * width for row in range(height)]
-        center = (width//2, height//2)
+        grid = [[[0.0, WALL, 0.0] for col in range(width)] for row in range(height)]
+        center_y = height//2
+        center_x = width//2
         # the original game board
         # it's easier to work on the original board then transfer it onto the grid
-        board = [[0] * self.width for row in range(self.height)]
+        board = [[[0.0, 0.0, 0.0] for col in range(self.width)] for row in range(self.height)]
         
         # positions are (y, x) not (x, y)
         # because you read the grid row by row, i.e. (row number, column number)
         # otherwise the board is transposed
-        for food in self.food:
-            # I suppose a food is more wanted than an enmpty cell so let EMPTY be the base value
-            board[food[0]][food[1]] = (you.health + HUNGER_a) * HUNGER_m
-        
-        my_length = len(you.body)
+        length_minus_1 = len(you.body) - 1
         for snake in self.snakes:
             body = snake.body
             # get head
-            board[body[0][0]][body[0][1]] = (len(body) - (my_length - 1)) * SNAKE_h
+            board[body[0][0]][body[0][1]][0] = (len(body) - (length_minus_1)) * HEAD_m
             # get the rest of the body
             dist = len(body)
             # Don't do the body[1:] slicing. It will copy the list
             for i in range(1, len(body)):
-                board[body[i][0]][body[i][1]] = dist * SNAKE_m
+                board[body[i][0]][body[i][1]][1] = dist * SNAKE_m
                 dist -= 1
         
+        for food in self.food:
+            board[food[0]][food[1]][2] = (101 - you.health) * HUNGER_m
+        
         # get my head
-        head = you.body[0]
-        board[you.body[0][0]][you.body[0][1]] = 1.0 - you.health/100.0
+        head_y, head_x = you.body[0]
+        board[head_y][head_x] = [1.0 - you.health/100.0] * 3
         
         # from this point, all positions are measured relative to our head
         for y in range(self.height):
             for x in range(self.width):
-                grid[y - head[0] + center[1]][x - head[1] + center[0]] = board[y][x]
+                grid[y - head_y + center_y][x - head_x + center_x] = board[y][x]
         
         return grid

@@ -2,15 +2,15 @@ from tensorflow import keras as ks
 from numpy import array
 
 class AlphaNNet:
-
+    
     def __init__(self, model=None, in_shape=None):
         if model:
             self.nnet = ks.models.load_model(model)
         elif in_shape:
             self.nnet = ks.Sequential([
-                ks.layers.Conv2D(36, (3, 3), activation = 'relu', input_shape = in_shape),
+                ks.layers.Conv2D(12, (3, 3), activation = 'relu', input_shape = in_shape),
                 ks.layers.Flatten(),
-                ks.layers.Dense(12, activation = 'relu'),
+                ks.layers.Dense(8, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
