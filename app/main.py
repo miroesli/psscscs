@@ -8,7 +8,9 @@ from utils.data_to_state import translate
 from utils.alphaNNet import AlphaNNet
 from utils.agent import Agent
 
-DEFAULT_MODEL_CONFIG_PATH = "./settings/default"
+# The server runs the main method from the root - we can change this by using
+# the os library to change the directory where it is being called from.
+DEFAULT_MODEL_CONFIG_PATH = "./app/settings/default"
 VERBOSE = True
 
 
