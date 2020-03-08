@@ -12,12 +12,12 @@ from utils.alphaNNet import AlphaNNet
 class AlphaSnakeZeroTrainer:
     
     def __init__(self, numIters=5,
-                 numEps=300,
-                 competeEps=100,
+                 numEps=2000,
+                 competeEps=200,
                  threshold=0.55,
                  height=11,
                  width=11,
-                 snake_cnt=4,
+                 snake_cnt=8,
                  model=None,
                  **config):
 
@@ -48,6 +48,7 @@ class AlphaSnakeZeroTrainer:
                     X += Alice.records[snake_id]
                     # assign estimated policies
                     # this substitutes the MCTS
+                    gamma = 1
                     if snake_id == winner_id:
                         for j in range(step):
                             move = Alice.moves[snake_id][j]
@@ -55,30 +56,31 @@ class AlphaSnakeZeroTrainer:
                             boost = 0
                             for k in range(4):
                                 if k != move:
-                                    decay[k] = Alice.policies[snake_id][j][k]*(j + 1)/step
+                                    decay[k] = Alice.policies[snake_id][j][k]*gamma
                                     boost += decay[k]
                             for k in range(4):
                                 if k == move:
                                     Alice.policies[snake_id][j][k] += boost
                                 else:
                                     Alice.policies[snake_id][j][k] -= decay[k]
+                            gamma *= 0.8
                     else:
                         for j in range(step):
                             move = Alice.moves[snake_id][j]
-                            decay = Alice.policies[snake_id][j][move]*(j + 1)/step
-                            boost = decay/3
+                            decay = Alice.policies[snake_id][j][move]*gamma
+                            boost = decay/3.0
                             for k in range(4):
                                 if k == move:
                                     Alice.policies[snake_id][j][k] -= decay
                                 else:
                                     Alice.policies[snake_id][j][k] += boost
+                            gamma *= 0.8
                     Y += Alice.policies[snake_id]
                 Alice.clear()
             print("Self play time", time() - t0)
             t0 = time()
             new_nnet = nnet.copy()
-            new_nnet.train(array(X), array(Y))
-            print("Training time", time() - t0)
+            new_nnet.train(array(X), array(Y), ep=32, bs=self.numEps*4) # ep, bs
             # compare new net with previous net
             t0 = time()
             frac_win = self.compete(new_nnet, nnet)
@@ -95,14 +97,16 @@ class AlphaSnakeZeroTrainer:
         if self.model:
             nnet = AlphaNNet(model=self.model)
         else:
-            nnet = AlphaNNet(in_shape=(self.height*2 - 1, self.width*2 - 1))
+            nnet = AlphaNNet(in_shape=(self.height*2 - 1, self.width*2 - 1, 1))
         model_num = 0
         while 1:
             model_num += 1
-            nnet = self.train_alpha(nnet)
+            new_nnet = self.train_alpha(nnet)
             # need to store the nnet
-            nnet.save("Network_No." + str(model_num))
-            print("Network saved.")
+            if not (nnet is new_nnet):
+                nnet = new_nnet
+                nnet.save("Network_No." + str(model_num))
+                print("Network saved.")
 
     def compete(self, nnet1, nnet2):
         sep = self.snake_cnt//2

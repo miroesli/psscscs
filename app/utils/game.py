@@ -3,12 +3,12 @@ from random import sample, choice, random
 from utils.snake import Snake
 
 WALL = 1.0
-MYHEAD = 0.0
 # adders & mutipliers
 # (value + value_a) * value_m
 HUNGER_a = -101
 HUNGER_m = 0.01
 SNAKE_m = 0.01
+SNAKE_h = 0.1
 
 
 class Game:
@@ -228,7 +228,7 @@ class Game:
         for snake in self.snakes:
             body = snake.body
             # get head
-            board[body[0][0]][body[0][1]] = (len(body) - (my_length - 1)) * SNAKE_m
+            board[body[0][0]][body[0][1]] = (len(body) - (my_length - 1)) * SNAKE_h
             # get the rest of the body
             dist = len(body)
             # Don't do the body[1:] slicing. It will copy the list
@@ -238,7 +238,7 @@ class Game:
         
         # get my head
         head = you.body[0]
-        board[you.body[0][0]][you.body[0][1]] = MYHEAD
+        board[you.body[0][0]][you.body[0][1]] = 1.0 - you.health/100.0
         
         # from this point, all positions are measured relative to our head
         for y in range(self.height):

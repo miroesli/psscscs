@@ -1,13 +1,5 @@
-from numpy import array, argmax
+from numpy import reshape, argmax
 from numpy.random import choice
-
-EMPTY = 0.0
-WALL = 1.0
-# adders & mutipliers
-# (value + value_a) * value_m
-HUNGER_a = -101
-HUNGER_m = 0.01
-SNAKE_m = 0.01
 
 
 class Agent:
@@ -20,17 +12,17 @@ class Agent:
         self.moves = {i:[] for i in snake_ids}
     
     def make_moves(self, states, snake_ids):
-        X = array(states)
+        X = reshape(states, (-1, len(states[0]), len(states[0][0]), 1))
         Y = self.nnet.pi(X)
         if self.training:
             moves = [choice([0, 1, 2, 3], p=y) for y in Y]
             for i in range(len(states)):
                 # record the game state for traininig
-                self.records[snake_ids[i]].append(X[i])
+                self.records[snake_ids[i]].insert(0, X[i])
                 # record the policy calculated by the network
-                self.policies[snake_ids[i]].append(Y[i])
+                self.policies[snake_ids[i]].insert(0, Y[i])
                 # record the move made
-                self.moves[snake_ids[i]].append(moves[i])
+                self.moves[snake_ids[i]].insert(0, moves[i])
         else:
             moves = [argmax(y) for y in Y]
         return moves
