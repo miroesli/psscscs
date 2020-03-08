@@ -78,9 +78,10 @@ class AlphaSnakeZeroTrainer:
                     Y += Alice.policies[snake_id]
                 Alice.clear()
             print("Self play time", time() - t0)
-            t0 = time()
             new_nnet = nnet.copy()
-            new_nnet.train(array(X), array(Y), ep=32, bs=self.numEps*4) # ep, bs
+            t0 = time()
+            new_nnet.train(array(X), array(Y), ep=64, bs=len(X)//2) # bs=len(X)//?
+            print("Training time", time() - t0)
             # compare new net with previous net
             t0 = time()
             frac_win = self.compete(new_nnet, nnet)
@@ -100,11 +101,11 @@ class AlphaSnakeZeroTrainer:
             nnet = AlphaNNet(in_shape=(self.height*2 - 1, self.width*2 - 1, 1))
         model_num = 0
         while 1:
-            model_num += 1
             new_nnet = self.train_alpha(nnet)
             # need to store the nnet
             if not (nnet is new_nnet):
                 nnet = new_nnet
+                model_num += 1
                 nnet.save("Network_No." + str(model_num))
                 print("Network saved.")
 

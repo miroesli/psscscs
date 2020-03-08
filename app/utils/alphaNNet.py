@@ -8,15 +8,13 @@ class AlphaNNet:
             self.nnet = ks.models.load_model(model)
         elif in_shape:
             self.nnet = ks.Sequential([
-                ks.layers.Conv2D(121, (3, 3), activation = 'relu', input_shape = in_shape),
-                ks.layers.Conv2D(81, (3, 3), activation = 'relu'),
-                ks.layers.Conv2D(49, (3, 3), activation = 'relu'),
-                ks.layers.Conv2D(25, (3, 3), activation = 'relu'),
+                ks.layers.Conv2D(36, (3, 3), activation = 'relu', input_shape = in_shape),
                 ks.layers.Flatten(),
+                ks.layers.Dense(12, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(
-                optimizer = ks.optimizers.Adam(lr = 0.001),
+                optimizer = ks.optimizers.Adam(lr = 0.0005), # lr < 0.001
                 loss = "categorical_crossentropy"
             )
     
@@ -31,7 +29,7 @@ class AlphaNNet:
         nnet_copy.nnet = ks.models.clone_model(self.nnet)
         nnet_copy.nnet.build(self.nnet.layers[0].input_shape)
         nnet_copy.nnet.compile(
-            optimizer = ks.optimizers.Adam(lr = 0.001),
+            optimizer = ks.optimizers.Adam(lr = 0.0005), # lr < 0.001
             loss = "categorical_crossentropy"
         )
         nnet_copy.nnet.set_weights(self.nnet.get_weights())
