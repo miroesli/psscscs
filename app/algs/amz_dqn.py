@@ -202,7 +202,7 @@ class DQN:
                     break
 
             if self.should_render and (i_episode % self.render_steps == 0):
-                write_gif(rgb_arrays, 'gif:{}-{}.gif'.format(self.run_name, i_episode),
+                write_gif(rgb_arrays, 'gifs/gif:{}-{}.gif'.format(self.run_name, i_episode),
                           fps=5)
 
             timesteps.append(self.env.turn_count)
