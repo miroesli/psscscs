@@ -49,7 +49,7 @@ def main():
 
     if algorithm == 'AlphaSnakeZero':
         alg = AlphaSnakeZeroTrainer(**config)
-    elif algorithm == 'dqn':
+    elif algorithm == 'amz_dqn':
         alg = DQN(**config)
     else:
         alg = Template(**config)
