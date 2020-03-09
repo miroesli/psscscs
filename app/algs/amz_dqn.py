@@ -6,8 +6,8 @@ import argparse
 import os
 import json
 
-from utils.gym-battlesnake.gym_battlesnake.envs.bs_env import BsEnv
-from mxboard import SummaryWriter
+from utils.gym_battlesnake import *
+# from mxboard import SummaryWriter
 
 from utils.amz_agent import MultiAgentsCollection
 
@@ -109,11 +109,11 @@ class DQN:
         self.print_progress = print_progress
         self.run_name = run_name
 
-        if self.writer:
-            writer = SummaryWriter(
-                "logs/{}-seed{}".format(run_name, seed), verbose=False)
-        else:
-            writer = None
+        # if self.writer:
+        #     writer = SummaryWriter(
+        #         "logs/{}-seed{}".format(run_name, seed), verbose=False)
+        # else:
+        #     writer = None
 
         # Initialise the environment
         self.env = BsEnv(
