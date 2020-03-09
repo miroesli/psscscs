@@ -3,7 +3,7 @@ import sys
 # import os
 
 from algs.alpha_snake_zero_trainer import AlphaSnakeZeroTrainer
-from algs.dqn import DQN
+from algs.amz_dqn import DQN
 from algs.template import Template
 
 DEFAULT_TRAIN_CONFIG_PATH = "./settings/train_params"
