@@ -9,3 +9,5 @@ engine
 *.h5
 venvs/
 *.egg-info
+app/models/*.params
+app/models/*.json
