@@ -6,7 +6,7 @@ import argparse
 import os
 import json
 
-from utils.gym_battlesnake import *
+from gym_battlesnake.envs.bs_env import BsEnv
 # from mxboard import SummaryWriter
 
 from utils.amz_agent import MultiAgentsCollection
@@ -109,50 +109,54 @@ class DQN:
         self.print_progress = print_progress
         self.run_name = run_name
 
-        # if self.writer:
-        #     writer = SummaryWriter(
-        #         "logs/{}-seed{}".format(run_name, seed), verbose=False)
-        # else:
-        #     writer = None
-
-        # Initialise the environment
-        self.env = BsEnv(
-            map_size=map_size, observation_type=snake_representation)
-        self.env.seed(seed)
-
-        # Initialise agent
-        if self.state_type == "layered":
-            self.state_depth = 1+self.number_of_snakes
-        elif self.state_type == "one_versus_all":
-            state_depth = 3
-
-        if "bordered" in self.snake_representation:
-            state_shape = (map_size[0]+2, map_size[1]+2, state_depth)
-        else:
-            state_shape = (map_size[0], map_size[1], state_depth)
-
-        agent_params = (seed, model_dir,
-                        load, self.load_only_conv_layers,
-                        self.models_to_save,
-                        # State configurations
-                        self.state_type, state_shape, self.number_of_snakes,
-
-                        # Learning configurations
-                        self.buffer_size, self.update_every,
-                        self.lr_start, self.lr_step, self.lr_factor,
-                        self.gamma, self.tau, self.batch_size,
-
-                        # Network configurations
-                        self.qnetwork_type, self.sequence_length,
-                        self.starting_channels, self.number_of_conv_layers,
-                        self.number_of_dense_layers, self.number_of_hidden_states,
-                        self.depthS, self.depth,
-                        self.kernel_size, self.repeat_size,
-                        self.activation_type)
-
-        self.agents = MultiAgentsCollection(*agent_params)
-
     def train(self):
+        for seed in self.seeds:
+            # if self.writer:
+            #     writer = SummaryWriter(
+            #         "logs/{}-seed{}".format(run_name, seed), verbose=False)
+            # else:
+            #     writer = None
+
+            # Initialise the environment
+            self.env = BsEnv(
+                map_size=self.map_size, observation_type=self.snake_representation)
+            self.env.seed(seed)
+
+            # Initialise agent
+            if self.state_type == "layered":
+                state_depth = 1+self.number_of_snakes
+            elif self.state_type == "one_versus_all":
+                state_depth = 3
+
+            if "bordered" in self.snake_representation:
+                state_shape = (
+                    self.map_size[0]+2, self.map_size[1]+2, state_depth)
+            else:
+                state_shape = (map_size[0], map_size[1], state_depth)
+
+            agent_params = (seed, self.model_dir,
+                            self.load, self.load_only_conv_layers,
+                            self.models_to_save,
+                            # State configurations
+                            self.state_type, state_shape, self.number_of_snakes,
+
+                            # Learning configurations
+                            self.buffer_size, self.update_every,
+                            self.lr_start, self.lr_step, self.lr_factor,
+                            self.gamma, self.tau, self.batch_size,
+
+                            # Network configurations
+                            self.qnetwork_type, self.sequence_length,
+                            self.starting_channels, self.number_of_conv_layers,
+                            self.number_of_dense_layers, self.number_of_hidden_states,
+                            self.depthS, self.depth,
+                            self.kernel_size, self.repeat_size,
+                            self.activation_type)
+
+            self.agents = MultiAgentsCollection(*agent_params)
+            self.dqn_run()
+
+    def dqn_run(self):
         """Deep Q-Learning.
 
         Inspired from torch code provided in 
@@ -198,7 +202,7 @@ class DQN:
                     break
 
             if self.should_render and (i_episode % self.render_steps == 0):
-                write_gif(rgb_arrays, 'gifs/gif:{}-{}.gif'.format(name, i_episode),
+                write_gif(rgb_arrays, 'gif:{}-{}.gif'.format(self.run_name, i_episode),
                           fps=5)
 
             timesteps.append(self.env.turn_count)
@@ -207,11 +211,11 @@ class DQN:
                 scores[i].append(score[i])
 
             eps = max(self.eps_end, self.eps_decay*eps)
-            if self.writer:
-                for i in range(self.number_of_snakes):
-                    self.writer.add_scalar("rewards_{}".format(i),
-                                           score[i], i_episode)
-                self.writer.add_scalar("max_timesteps", t, i_episode)
+            # if self.writer:
+            #     for i in range(self.number_of_snakes):
+            #         self.writer.add_scalar("rewards_{}".format(i),
+            #                                score[i], i_episode)
+            #     self.writer.add_scalar("max_timesteps", t, i_episode)
 
             average_score = ""
             for i in range(self.number_of_snakes):
