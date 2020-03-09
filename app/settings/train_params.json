@@ -12,10 +12,7 @@
         "algorithm": "AlphaSnakeZero",
         "numIters": 2000
     },
-    "dqn_100": {
-        "algorithm": "amz_dqn"
-    },
-    "dqn_1000": {
+    "dqn_1": {
         "algorithm": "amz_dqn"
     }
 }
