@@ -10,7 +10,6 @@ class AlphaNNet:
             self.nnet = ks.Sequential([
                 ks.layers.Conv2D(12, (3, 3), activation = 'relu', input_shape = in_shape),
                 ks.layers.Flatten(),
-                ks.layers.Dense(8, activation = 'relu'),
                 ks.layers.Dense(4, activation = 'softmax')
             ])
             self.nnet.compile(

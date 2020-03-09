@@ -7,9 +7,10 @@ class Agent:
     def __init__(self, nnet, snake_ids, training=False):
         self.nnet = nnet
         self.training = training
-        self.records = {i:[] for i in snake_ids}
-        self.policies = {i:[] for i in snake_ids}
-        self.moves = {i:[] for i in snake_ids}
+        if training:
+            self.records = {i:[] for i in snake_ids}
+            self.policies = {i:[] for i in snake_ids}
+            self.moves = {i:[] for i in snake_ids}
     
     def make_moves(self, states, snake_ids):
         X = reshape(states, (-1, len(states[0]), len(states[0][0]), 3))
