@@ -13,9 +13,9 @@
         "numIters": 2000
     },
     "dqn_100": {
-        "algorithm": "amz_dqn",
+        "algorithm": "amz_dqn"
     },
     "dqn_1000": {
-        "algorithm": "amz_dqn",
+        "algorithm": "amz_dqn"
     }
 }
