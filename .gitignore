@@ -7,5 +7,5 @@ engine
 *mytest*
 *.old
 *.h5
-# envs/
+venvs/
 *.egg-info
