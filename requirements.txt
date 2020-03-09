@@ -8,3 +8,4 @@ array2gif
 mxboard
 gym
 torch
+numpy==1.16.4
