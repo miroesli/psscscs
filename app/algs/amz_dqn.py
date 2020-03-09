@@ -24,7 +24,7 @@ VERBOSE = True
 class DQN:
     def __init__(self,
                  seeds=[0, 666, 15],
-                 map_size=[15, 15],
+                 map_size=[11, 11],
                  number_of_snakes=4,
                  snake_representation='bordered-51s',
                  state_type='one_versus_all',
@@ -124,13 +124,13 @@ class DQN:
 
             # Initialise agent
             if self.state_type == "layered":
-                state_depth = 1+self.number_of_snakes
+                state_depth = 1 + self.number_of_snakes
             elif self.state_type == "one_versus_all":
                 state_depth = 3
 
             if "bordered" in self.snake_representation:
                 state_shape = (
-                    self.map_size[0]+2, self.map_size[1]+2, state_depth)
+                    self.map_size[0] + 2, self.map_size[1] + 2, state_depth)
             else:
                 state_shape = (map_size[0], map_size[1], state_depth)
 
@@ -170,7 +170,7 @@ class DQN:
         eps = self.eps_start
         max_time_steps = 0
 
-        for i_episode in range(1, self.episodes+1):
+        for i_episode in range(1, self.episodes + 1):
             state, _, dones, info = self.env.reset()
             info["episodes"] = i_episode
             score = [0 for _ in range(self.number_of_snakes)]
@@ -202,7 +202,7 @@ class DQN:
                     break
 
             if self.should_render and (i_episode % self.render_steps == 0):
-                write_gif(rgb_arrays, 'gifs/gif:{}-{}.gif'.format(self.run_name, i_episode),
+                write_gif(rgb_arrays, 'gifs/gif-{}-{}.gif'.format(self.run_name, i_episode),
                           fps=5)
 
             timesteps.append(self.env.turn_count)
@@ -210,7 +210,7 @@ class DQN:
                 scores_window[i].append(score[i])
                 scores[i].append(score[i])
 
-            eps = max(self.eps_end, self.eps_decay*eps)
+            eps = max(self.eps_end, self.eps_decay * eps)
             # if self.writer:
             #     for i in range(self.number_of_snakes):
             #         self.writer.add_scalar("rewards_{}".format(i),
@@ -225,10 +225,10 @@ class DQN:
             print_string = 'Episode {}\tAverage Score: {}\tMean timesteps {:.2f}'.format(
                 i_episode, average_score, np.mean(timesteps))
             if self.print_progress:
-                print("\r"+print_string, end="")
+                print("\r" + print_string, end="")
             if i_episode % self.print_score_steps == 0:
                 if self.print_progress:
-                    print("\r"+print_string)
+                    print("\r" + print_string)
                 else:
                     print(print_string)
 
