@@ -4,3 +4,8 @@ greenlet==0.4.14
 gunicorn==19.9.0
 keras-rl==0.4.2
 tensorflow==1.14.0
+array2gif
+mxboard
+gym
+torch
+numpy==1.16.4
