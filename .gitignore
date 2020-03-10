@@ -7,4 +7,7 @@ engine
 *mytest*
 *.old
 *.h5
-envs/
+venvs/
+*.egg-info
+app/models/*.params
+app/models/*.json

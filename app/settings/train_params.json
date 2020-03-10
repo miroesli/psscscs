@@ -11,5 +11,8 @@
     "trial_2": {
         "algorithm": "AlphaSnakeZero",
         "numIters": 2000
+    },
+    "dqn_1": {
+        "algorithm": "amz_dqn"
     }
 }
