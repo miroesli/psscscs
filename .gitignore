@@ -5,4 +5,3 @@ battlesnake
 .vscode
 engine
 *.old
-*.h5
