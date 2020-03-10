@@ -10,9 +10,8 @@ HEAD_m = 0.04
 
 
 class Game:
-    
+
     def __init__(self, height, width, snake_cnt):
-        
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
         # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/create.go
@@ -22,11 +21,12 @@ class Game:
                 (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
             ],
             snake_cnt)
-        
+
         # I changed the data structure to speed up the game
         # empty_positions is used to generate food randomly
-        self.empty_positions = {(y, x) for y in range(height) for x in range(width)}
-        
+        self.empty_positions = {(y, x) for y in range(height)
+                                for x in range(width)}
+
         self.height = height
         self.width = width
         self.snake_cnt = snake_cnt
@@ -34,11 +34,11 @@ class Game:
         self.snakes = [Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)]
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
-        
+
         self.food = set(sample(self.empty_positions, snake_cnt))
         for food in self.food:
             self.empty_positions.remove(food)
-        
+
         # two board sets are used to reduce run time
         self.heads = {snake.body[0]: {snake} for snake in self.snakes}
         self.bodies = {snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
@@ -58,7 +58,7 @@ class Game:
         snakes = self.snakes
         # game procedures
         while len(snakes) > 1:
-            
+
             # ask for moves
             if Bob:
                 # one set might be empty
@@ -111,7 +111,7 @@ class Game:
             # reduce health
             for snake in snakes:
                 snake.health -= 1
-            
+
             # remove dead snakes
             # I have checked the code of the battlesnake game
             # their algorithm for checking collisions is shit

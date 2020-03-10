@@ -46,11 +46,14 @@ def main():
         print("Missing algorithm parameter")
         exit(0)
 
-    alg = Template(**config)
     if algorithm == 'AlphaSnakeZero':
         alg = AlphaSnakeZeroTrainer(**config)
+    else:
+        alg = Template(**config)
 
-    alg.train() # The train function will save the neural network in the models/ folder and we'll be done.
+    # The train function will save the neural network in the models/ folder and we'll be done.
+    alg.train()
+
 
 if __name__ == "__main__":
     main()

@@ -4,4 +4,11 @@ battlesnake
 .idea
 .vscode
 engine
+<<<<<<< HEAD
 *.old
+=======
+*mytest*
+*.old
+*.h5
+envs/
+>>>>>>> dev

@@ -1,6 +1,9 @@
 from tensorflow import keras as ks
 from numpy import array
 
+models_fp = 'models/'
+
+
 class AlphaNNet:
     
     def __init__(self, model=None, in_shape=None):
@@ -33,6 +36,6 @@ class AlphaNNet:
         )
         nnet_copy.nnet.set_weights(self.nnet.get_weights())
         return nnet_copy
-    
+
     def save(self, name):
-        self.nnet.save(name + '.h5')
+        self.nnet.save(models_fp + name + '.h5')
