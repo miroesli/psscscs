@@ -223,17 +223,16 @@ class Game:
         # positions are (y, x) not (x, y)
         # because you read the grid row by row, i.e. (row number, column number)
         # otherwise the board is transposed
-        length_minus_1 = len(you.body) - 1
+        length_minus_half = len(you.body) - 0.5
         for snake in self.snakes:
             body = snake.body
             # get head
-            board[body[0][0]][body[0][1]][0] = (len(body) - (length_minus_1)) * HEAD_m
+            board[body[0][0]][body[0][1]][0] = (len(body) - (length_minus_half)) * HEAD_m
             # get the rest of the body
-            dist = len(body)
-            # Don't do the body[1:] slicing. It will copy the list
-            for i in range(1, len(body)):
+            dist = 1
+            for i in range(len(body)-1, 0, -1):
                 board[body[i][0]][body[i][1]][1] = dist * SNAKE_m
-                dist -= 1
+                dist += 1
         
         for food in self.food:
             board[food[0]][food[1]][2] = (101 - you.health) * HUNGER_m
