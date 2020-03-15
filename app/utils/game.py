@@ -106,7 +106,9 @@ class Game:
                 self.bodies.add(old_head)
                 if tail:
                     self.bodies.remove(tail)
-                    self.empty_positions.add(tail)
+                    # no one enters this cell
+                    if tail not in self.heads:
+                        self.empty_positions.add(tail)
             
             # reduce health
             for snake in snakes:
