@@ -3,10 +3,10 @@ import os
 import random
 import bottle
 
-from api import ping_response, start_response, move_response, end_response
-from utils.data_to_state import translate
-from utils.alphaNNet import AlphaNNet
-from utils.agent import Agent
+from app.api import ping_response, start_response, move_response, end_response
+from app.utils.data_to_state import translate
+from app.utils.alphaNNet import AlphaNNet
+from app.utils.agent import Agent
 
 # The server runs the main method from the root - we can change this by using
 # the os library to change the directory where it is being called from.
