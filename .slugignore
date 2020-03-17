@@ -1,4 +1,6 @@
 *.png
-app/utils/gym-battlesnake/
+gym-battlesnake/
 *.gif
 .git/
+*.md
+docs/
