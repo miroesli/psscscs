@@ -9,12 +9,13 @@ class AlphaNNet:
     def __init__(self, 
         model='default',
         loss='categorical_crossentropy',
-        in_shape=[21,21,3],
+        in_shape=[11,11,3],
         **config): 
 
     #def __init__(self, model=None, in_shape=None):
         try:
             self.nnet = ks.models.load_model(model)
+            print('no model found')
         except IOError: #file not found
             self.nnet = ks.Sequential([
                 ks.layers.Conv2D(12, (3, 3), activation = 'relu', input_shape = in_shape),

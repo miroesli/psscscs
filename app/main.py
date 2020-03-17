@@ -4,9 +4,11 @@ import random
 import bottle
 
 from app.api import ping_response, start_response, move_response, end_response
-from app.utils.data_to_state import translate
+from app.utils.data_to_state import translate, make_state
 from app.utils.alphaNNet import AlphaNNet
 from app.utils.agent import Agent
+
+from numpy import reshape
 
 # The server runs the main method from the root - we can change this by using
 # the os library to change the directory where it is being called from.
@@ -76,8 +78,24 @@ def move():
 
     # TODO: add agent moves, if training
 
+    snakes = data["board"]["snakes"]
+    food = data["board"]["food"]
+    shape = [data["board"]["width"], data["board"]["height"]]
+    print(snakes) 
+    print(food)
+    print(shape)
+    states = [make_state(snake, snakes, food, shape) for snake in snakes]
+    moves = snake.make_moves(states, snakes)
+    print(moves)
+    #states = translate(data)
+    #print(model.pi(translate(data)))
+    #print(len(states[0]))
+    #print(len(states[0][0]))
+    #print(model.pi(reshape(states, (-1, len(states[0]), len(states[0][0]), 3))))
+    #print(model.pi(translate(data)))
+
     return {
-        'move': directions[snake.make_move(translate(data)[0])],
+        'move': directions[snake.make_moves(translate(data)[0])],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
 
@@ -85,7 +103,7 @@ def move():
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-    model.save(config['model'])
+    #model.save(config['model'])
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
@@ -104,8 +122,8 @@ with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     config = json.load(config_file)
 
 model = AlphaNNet(**config)
-#t = config['train']  # this would be if we want to train via this api also
-#snake = Agent(nnet=model, training=t)
+t = config['train']  # this would be if we want to train via this api also
+snake = Agent(nnet=model, training=t)
 
 if __name__ == '__main__':
     bottle.run(
