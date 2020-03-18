@@ -11,10 +11,8 @@ Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 `source envs/bin/activate`  
 `pip install -r requirements.txt`  
 2. Run the server  
-`cd app`  
-`python main.py`  
-3. ??  
-  
+`gunicorn app.main:application`   
+    
 ## Project specific info  
 Currently a 3 layer nn is used for prediction. While 8 layers are derived from the input, AlphaGo is not being utilized, need to do this.  
 
