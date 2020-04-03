@@ -238,20 +238,20 @@ To get a good estimate of the value function without MCTS, we label the Q values
 according to the following criteria. From the point of view of any snake, the
 transition between states is not deterministic. The transition is a Markov
 process because it depends on how other snake moves. Let the function
-$\Phi(s_0,a,s_1)$ represents the probability of entering state $s_1$, if you
+$\Psi(s_0,a,s_1)$ represents the probability of entering state $s_1$, if you
 take the action a at current state $s_0$. Let the Q value vector of state $s_0$
 be $\langle Q(s_0,0),Q(s_0,1),Q(s_0,2) \rangle$. Say $Q(s_0,a)$ is high and you
-pick this action a. Now with probability $\Phi(s_0,a,s_1)$, we then have entered
+pick this action a. Now with probability $\Psi(s_0,a,s_1)$, we then have entered
 the next state $s_1$, and we now get the Q values $\langle
   Q(s_1,0),Q(s_1,1),Q(s_1,2) \rangle$. Since the Q values represent win rate, the
 optimal strategy is to pick $\argmax_{a_i}Q(s_1,a_i)$. Then we can say that, at
-state $s_0$, if we pick action a, with probability $\Phi(s_0,a,s_1)$, we end up
+state $s_0$, if we pick action a, with probability $\Psi(s_0,a,s_1)$, we end up
 with a win rate of $\max_{a_i}Q(s_1,a_i)$. Obviously, we can see that the Q
 value is a weighted sum of the max Q values of its successor states, thus we
 have
 
 \begin{equation}
-  Q(s_0, a) = \sum\limits_{s_i}\Phi(s_0,a,s_i)\max_{a_j} Q(s_i,a_j)
+  Q(s_0, a) = \sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j} Q(s_i,a_j)
 \end{equation}
 
 This equation is the core part of AlphaSnake Zero’s training algorithm. We can
@@ -265,34 +265,34 @@ $\max_{a_i}Q(s_1,a_i)$ was updated to $\max_{a_i}Q^*(s_1,a_i)$ during the
 previous step, then we want the new $Q^*(s_0,a)$ to be
 
 \begin{dmath}
-  \Phi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
-    s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Phi(s_0,a,s_1)\times
+  \Psi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
+    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
   \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
-    s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Phi(s_o,a,s_1)\times
-  \max_{a_i}Q(s_1,a) = \Phi(s_0,a,s_1)\times
+    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Psi(s_o,a,s_1)\times
+  \max_{a_i}Q(s_1,a) = \Psi(s_0,a,s_1)\times
   [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+\sum\limits_{s_i\neq
-    s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Phi(s_0,a,s_1)\times
+    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
   [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+Q(s_0,a)
 \end{dmath}
 
 % \begin{equation}
-%   \Phi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
+%   \Psi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
 % \end{equation}
 
 % \begin{equation}
-%   = \Phi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
+%   = \Psi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
 % \end{equation}
 
 % \begin{equation}
-%   - \Phi(s_o,a,s_1)\times \max_{a_i}Q(s_1,a)
+%   - \Psi(s_o,a,s_1)\times \max_{a_i}Q(s_1,a)
 % \end{equation}
 
 % \begin{equation}
-%   = \Phi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+\sum\limits_{s_i\neq s_1}\Phi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
+%   = \Psi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+\sum\limits_{s_i\neq s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
 % \end{equation}
 
 % \begin{equation}
-%   = \Phi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+Q(s_0,a)
+%   = \Psi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+Q(s_0,a)
 % \end{equation}
 
 We can see that if the max of its successor was unchanged then the new value
@@ -308,22 +308,22 @@ value over 1 and recursively messes up the whole chain of states. Thus, we
 assign the following bounded value to $Q^*(s_0,a)$.
 
 \begin{equation}
-  min(max(\Phi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+Q(s_0,a),0),1)
+  min(max(\Psi(s_0,a,s_1)\times [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+Q(s_0,a),0),1)
 \end{equation}
 
 To complete the final piece of our estimation of Q values, we need to know
-$\Phi$, the transition probability. If we get the actions of every snake, then
+$\Psi$, the transition probability. If we get the actions of every snake, then
 the transition is almost deterministic, except the food spawns randomly, but
 that is a minor factor. Obviously, since the game is synchronous, the
 probability of any snake taking an action is independent from others.
-$\Phi(s_0,a,s_1)$ is almost equal to the product of some entry of each policy
+$\Psi(s_0,a,s_1)$ is almost equal to the product of some entry of each policy
 calculated by other snakes. Let the transition function
 $\Gamma(s,\overrightarrow{A})$ computes the successor state of $s$ given
 $\overrightarrow{A}$, a vector of actions of snakes (omitting the randomness of
 food).
 
 \begin{equation}
-  \Phi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s-I,1),Q(s_i,2) \rangle)}_{a_i}
+  \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s-I,1),Q(s_i,2) \rangle)}_{a_i}
 \end{equation}
 
 Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake’s view of
