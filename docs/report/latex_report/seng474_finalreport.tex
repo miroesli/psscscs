@@ -147,18 +147,19 @@ agains the old one and further replace it if performance is better.
 For the input of the network, we need something that can recover enough
 information of the game board. The designed state representation is as
 follows: The state is a 21x21x3 tensor. The game board is only 11x11, thus the 
-snake will quickly struggle identify where it's head lies. To make the task
-easier, the view of the game is centered at the snake’s head. Imagine you are
-the snake and you view the world around you, so a 21x21 board is needed to
-percieve the original board in the worst case. Additionally, every snake has
-its own view of the board.
+snake will quickly struggle to identify where it's head lies. To combat this, 
+the view of the game is centered at the snake’s head, allowing immediate 
+recognition of relative position. Imagine you are the snake and you view the 
+world around you, so a 21x21 board is needed to percieve the original board in 
+the worst case (if we are at the edge). Additionally, every snake has
+its own view of the board so this is replicated 3 more times.
 
-There are essentially three fundamental things in the game, things that if you
-run into you die (body and wall), things that if you run into you grow (food),
-and things that if you run into some snake will die (head). Thus, the game board
+There are essentially three fundamental things in the game, things that: if you
+run into you die (body and wall), if you run into you grow (food),
+and if you run into another snake will die (head). Thus, the game board
 is classified into 3 channels. The first layer is the picture of all the snakes’
-head. The second one is for all the obstacles (body and wall). And the last one
-shows all the food on the board. In all layers, 0 means an empty cell.
+heads. The second one is for all the 'deadly' obstacles (bodies and walls). And 
+the last one shows all the food on the board. In all layers, 0 means an empty cell.
 
 In the first layer, the value of a snake’s head is the snake’s length relative
 to the current player, so a negative value means a shorter snake’s head and vice
@@ -172,7 +173,7 @@ block is. The formula for computing the head value is simply
 
 where the multiplier is to keep the value in the range of [-1, 1] for training
 purposes. The 0.5 solves two problems, one mentioned earlier about the snake of
-same length, and it avoids the value inside the brackets to be zero, causing an
+same length, and it avoids the value inside the brackets defaulting to zero, causing an
 “invisible head”.
 
 In the second layer, the wall is simply represented with 1. We also need
@@ -192,16 +193,16 @@ following formula
 There are degenerate cases where it is not possible to tell which body belongs
 to which snake, but body blocks all work the same way, so it does not matter.
 
-In the last layer, all the food is labeled according to your health point. This
+In the last layer, all the food is labeled according to the snake's health points. This
 has a huge benefit to reducing the difficulty of learning. It strongly relates
-the food to health, and no explicit information for health is needed to be
+the food to health, and no explicit information for health needs to be
 stored.
 
 \begin{equation}
   value = (101-\text{your health}) \times \text{multiplier}
 \end{equation}
 
-Notice that it is impossible to recover the health of other snakes, but
+Note that it is impossible to recover the health of other snakes, but
 according to the experience of Battlesnake tournaments, it is not a useful
 information, as death due to starvation almost never happens in high level
 games. We use 101 instead of 100 to avoid the value inside the brackets to be
@@ -210,8 +211,8 @@ zero, resulting in “invisible food”.
 For the output of the network, we need something that can guide the action to
 take. A policy could be a good choice, but unlike the game of Go, where a move
 usually just adds another piece on the board, MCTS is too expensive for
-Battlesnake, because a move will drastically change the game board and thus very
-slow to compute. Instead of approximating the optimal policy, it is easy to
+Battlesnake, because a move will drastically change the game board and thus be very
+slow to compute. Instead of approximating the optimal policy, it is easier to
 obtain a good estimation of the Q values. Assume the optimal function for Q
 value is $Q(s,a)$, where it takes as input the current state $s$ and the action
 $a$, and it outputs the value (win rate) of the player if that action $a$ is
@@ -219,8 +220,8 @@ chosen under state $s$. An obvious fact is that a game board of Battlesnake is
 equivalent to its rotation and reflections (with actions also rotated or
 reflected, of course). Thus, we can rotate the board so that the snake is always
 facing upwards. This mainly has two benefits. First, it automatically treats all
-rotations as one, thus reduce overfitting. Second, there is always a backward
-move immediately kills you since you run into your own body, so this action is
+rotations as one, thus reducing overfitting. Second, there is always a backward
+move that immediately kills you (run into your own body), so this action is
 meaningless to evaluate. If the snake is always facing up, the output space can
 be transformed into \textit{turn left,go straight,turn right}, represented by
 numeric values {0,1,2}. It simplifies the network and training. Although it is
