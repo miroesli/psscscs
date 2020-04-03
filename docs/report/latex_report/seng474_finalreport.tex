@@ -16,7 +16,7 @@
 
 % to avoid loading the natbib package, add option nonatbib:
 %     \usepackage[nonatbib]{neurips_2019}
-
+\usepackage{float}          % to allow floating figures (ie placement in text)
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -29,6 +29,7 @@
 \usepackage{breqn}          % break equations over multiple lines
 % \usepackage{cite}           % citing references
 % \usepackage{biblatex}
+\usepackage{graphicx}       % for images
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
@@ -40,7 +41,7 @@
 %   \addbibresource{sample.bib}
 
 \usepackage{amsmath}        % for text in math equations
-
+\graphicspath{ {./images/}}
 
 \title{Multiagent Reinforcement Learning in a Synchronous Strategy Game}
 
@@ -95,8 +96,8 @@
 
 Battlesnake is a synchronous strategy game. It is simply a multiplayer version
 of the classic game Snake. The version we are training with is a 11x11 game
-board with 4 snakes. In each round, each player chooses an action from the space
-\textit{left,right,up,down}. The snake’s head and body will move accordingly. If
+board with 4 snakes. In each round, players choose an action from the space
+\textit{left,right,up,down}, the snake’s head and body will then move accordingly. If
 a snake’s head runs into any obstacle (a snake’s body or wall), it dies. If it
 runs into another snake’s head, the shorter snake dies (in a tied situation both
 snakes die). If it runs into a food, its length will grow by 1, and its health
@@ -105,42 +106,51 @@ it reaches 0 the snake dies. The last snake alive becomes the winner of the
 game. If no snakes live, it is considered a draw. See the reference for a more
 detailed description \cite{BattlesnakeDoc}.
 
+% Figure Here
+
+\begin{figure}[H]
+  \includegraphics[width=6cm]{snake}
+  \centering
+  \caption{A game of battlesnake in-progress.}
+\end{figure}
+
 \section{Related Work}
 
-The AlphaSnake Zero uses the same approach that AlphaGo Zero used
+AlphaSnake Zero uses the same approach that AlphaGo Zero used
 \cite{AlphaGoZeroPaper}, where the training algorithm consists of 3 stages,
-self-play, training and pit. Because the lack of a good computing device (a
+self-play, training and pit. Due to the lack of a powerful computing device (a
 TPU), the network for AlphaSnake is simplified. AlphaGo uses a two headed
 network to compute the value (roughly interpreted as win rate) of the current
 game board, and also a policy to guide the next action. As this is a
-reinforcement learning problem, there is no true label we can assign to the
-training data. Instead, they used a Monte Carlo Tree Search to get a good
+reinforcement learning problem, there is no true label that we can assign to the
+training data. Instead, a Monte Carlo Tree Search is used to get a good
 estimate of the optimal policy.
+
+% Figure Here
+
+\begin{figure}[H]
+  \includegraphics[width=12cm]{MCTS}
+  \centering
+  \caption{Steps of the MCTS algorithm.}
+\end{figure}
 
 \section{Method}
 
 In each iteration, a number of games are played using the current neural
-network, the data is recorded for training. For each turn of the game, we keep
+network, with data being recorded for training. For each turn of the game, we keep
 the information of the game board (the state), the move each snake made (the
-action), the computed Q values, the transition probability (explained later).
-Then we use the data to train the network. After training, the new network is
-going to compete with the old one and will replace the old one if it wins more.
+action), the computed Q values, the transition probability (expanded on later).
+Then we use the data to train the network. After training, the new network competes 
+agains the old one and further replace it if performance is better.
 
-% Figure Here
-
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
 
 For the input of the network, we need something that can recover enough
-information of the game board. The designed state representation is as the
-following. The state is a 21x21x3 tensor. The game board is only 11x11, but it
-quickly become a problem that to realize where your head is. To make the task
+information of the game board. The designed state representation is as
+follows: The state is a 21x21x3 tensor. The game board is only 11x11, thus the 
+snake will quickly struggle identify where it's head lies. To make the task
 easier, the view of the game is centered at the snake’s head. Imagine you are
 the snake and you view the world around you, so a 21x21 board is needed to
-recover all the original board when the snake is at the edge. Every snake gets
+percieve the original board in the worst case. Additionally, every snake has
 its own view of the board.
 
 There are essentially three fundamental things in the game, things that if you
