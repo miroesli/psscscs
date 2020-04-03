@@ -10,7 +10,7 @@
   - Have some motivation and make the problem interesting (first 3 slides)
   - give a description of the problem after initial motivation (first 3 slides)
   - mention at a high level some of the conclusions of the work (first 3 slides)
-  - Lots of
+  - Lots of Figures and Images, less words
 - Sections:
   - Intro from previous part
   - Approach
