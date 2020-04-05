@@ -4,7 +4,7 @@ from numpy.random import choice
 
 class Agent:
     
-    def __init__(self, nnet, training=False):
+    def __init__(self, nnet, snake_ids, training=False):
         self.nnet = nnet
         self.training = training
         if training:

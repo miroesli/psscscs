@@ -11,3 +11,4 @@ venvs/
 *.egg-info
 app/models/*.params
 app/models/*.json
+envs/

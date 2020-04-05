@@ -78,8 +78,8 @@ def move():
 
     # TODO: add agent moves, if training
     _ = translate(data)
-    print(_)
-    moves = snake.make_moves(_)
+    #print(_)
+    moves = snake.make_moves([_])
     print(moves)
     #states = translate(data)
     #print(model.pi(translate(data)))
