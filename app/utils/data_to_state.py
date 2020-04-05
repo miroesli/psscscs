@@ -4,7 +4,6 @@ EMPTY = 0.5
 # adders & mutipliers
 # (value + value_a) * value_m
 HUNGER_a = -101
-HUNGER_m = 0.005
 SNAKE_m = 0.02
 WALL = 1.0
 HEAD_m = 0.04
@@ -69,35 +68,3 @@ def translate(data):
 
     return grid 
 
-
-    '''
-    state = array([[[EMPTY] * width for row in range(height)]
-                   for layer in range(max_snakes)])
-
-    health = data['you']['health']
-    dist = len(data['you']['body'])
-    for b in data['you']['body']:
-        state[0][b['y']][b['x']] = EMPTY + dist * SNAKE_m
-        dist -= 1
-    for food in data['board']['food']:
-        state[0][food['y']][food['x']] = EMPTY + (health + HUNGER_a) * HUNGER_m
-
-    i = 1
-    for snake in data['board']['snakes']:
-        health = snake['health']
-        dist = len(snake['body'])
-        for b in snake['body']:
-            try:
-                state[i][b['y']][b['x']] = EMPTY + dist * SNAKE_m
-            except IndexError:
-                print(len(data['board']['snakes']), i, b)
-                print("\n\n\n\n\n\n")
-            dist -= 1
-        for food in data['board']['food']:
-            state[i][food['y']][food['x']] = EMPTY + \
-                (health + HUNGER_a) * HUNGER_m
-        i += 1
-
-    # , (data['you']['body'][0]['y'], data['you']['body'][0]['x'])
-    return state
-    '''

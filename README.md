@@ -11,10 +11,8 @@ Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 `source envs/bin/activate`  
 `pip install -r requirements.txt`  
 2. Run the server  
-`cd app`  
-`python main.py`  
-3. ??  
-  
+`gunicorn app.main:application`   
+    
 ## Project specific info  
 Currently a 3 layer nn is used for prediction. While 8 layers are derived from the input, AlphaGo is not being utilized, need to do this.  
 
@@ -92,15 +90,21 @@ Then try running `./engine dev`
 ## Deploying to Heroku
 
 1. Create a new Heroku app:
+You need to login first  
 
 ```bash
-heroku create [APP_NAME]
+heroku login  
+heroku create [APP_NAME] (psscscs is taken ;))
 ```
 
 2. Deploy code to Heroku servers:
-
+You will need to deploy from a branch other than master, since Misha put protections in  
+The following will push your local branch name 'testbranch' to the heroku master branch, NOT the actual git master branch  
+  
+FYI if you leave in the gym dependency in requirements.txt this won't work, it's currently commented out. Max image size is half a gig, with gym it's like 960MB  
+  
 ```bash
-git push heroku master
+git push heroku testbranch:master
 ```
 
 3. Open Heroku app in browser:

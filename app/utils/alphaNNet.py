@@ -6,10 +6,17 @@ models_fp = 'models/'
 
 class AlphaNNet:
     
-    def __init__(self, model=None, in_shape=None):
-        if model:
+    def __init__(self, 
+        model='default',
+        loss='categorical_crossentropy',
+        in_shape=[11,11,3],
+        **config): 
+
+    #def __init__(self, model=None, in_shape=None):
+        try:
             self.nnet = ks.models.load_model(model)
-        elif in_shape:
+            print('no model found')
+        except IOError: #file not found
             self.nnet = ks.Sequential([
                 ks.layers.Conv2D(12, (3, 3), activation = 'relu', input_shape = in_shape),
                 ks.layers.Flatten(),
@@ -17,7 +24,7 @@ class AlphaNNet:
             ])
             self.nnet.compile(
                 optimizer = ks.optimizers.Adam(lr = 0.0005), # lr < 0.001
-                loss = "categorical_crossentropy"
+                loss = loss 
             )
     
     def train(self, X, Y, ep = None, bs = None):

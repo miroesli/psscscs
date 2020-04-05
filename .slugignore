@@ -1,0 +1,6 @@
+*.png
+gym-battlesnake/
+*.gif
+.git/
+*.md
+docs/
