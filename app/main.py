@@ -4,7 +4,7 @@ import random
 import bottle
 
 from app.api import ping_response, start_response, move_response, end_response
-from app.utils.data_to_state import translate, make_state
+from app.utils.data_to_state import translate
 from app.utils.alphaNNet import AlphaNNet
 from app.utils.agent import Agent
 
@@ -13,7 +13,7 @@ from numpy import reshape
 # The server runs the main method from the root - we can change this by using
 # the os library to change the directory where it is being called from.
 DEFAULT_MODEL_CONFIG_PATH = "./app/settings/default"
-VERBOSE = True
+VERBOSE = False
 
 
 @bottle.route('/')
@@ -77,15 +77,9 @@ def move():
     directions = ['up', 'down', 'left', 'right']
 
     # TODO: add agent moves, if training
-
-    snakes = data["board"]["snakes"]
-    food = data["board"]["food"]
-    shape = [data["board"]["width"], data["board"]["height"]]
-    print(snakes) 
-    print(food)
-    print(shape)
-    states = [make_state(snake, snakes, food, shape) for snake in snakes]
-    moves = snake.make_moves(states, snakes)
+    _ = translate(data)
+    print(_)
+    moves = snake.make_moves(_)
     print(moves)
     #states = translate(data)
     #print(model.pi(translate(data)))

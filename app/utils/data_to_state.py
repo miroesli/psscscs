@@ -58,7 +58,9 @@ def translate(data):
         board[food['y']][food['x']][2] = (101 - data['you']['health']) * HUNGER_m
 
     # get my head
-    head_y, head_x = data['you']['body'][0]
+    #head_y, head_x = data['you']['body'][0]
+    head_y = data['you']['body'][0]['y']
+    head_x = data['you']['body'][0]['x']
     board[head_y][head_x] = [1.0 - data['you']['health']/100.0] * 3
 
     # from this point, all positions are measured relative to our head
