@@ -4,7 +4,7 @@ from utils.mytest_game import Game
 from player import Player
 
 file_name = input("\nEnter the model file name:\n")
-net = AlphaNNet(model = ".\\models\\" + file_name)
+net = AlphaNNet(model = "models/" + file_name)
 snake_cnt = 4 #int(input("Enter the number of snakes:\n"))
 
 f = open("replay.txt", 'w')
