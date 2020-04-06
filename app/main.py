@@ -7,7 +7,7 @@ from app.api import ping_response, start_response, move_response, end_response
 from app.utils.data_to_state import translate
 from app.utils.alphaNNet import AlphaNNet
 from app.utils.agent import Agent
-from app.utils.session import load_session
+from app.utils.heroku_session import load_session
 
 from numpy import reshape
 import numpy as np
