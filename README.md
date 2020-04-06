@@ -106,11 +106,15 @@ Then try running `./engine dev`
 
 ## Deploying to Heroku
 
+   
+Install this: https://devcenter.heroku.com/articles/heroku-cli  
+
+
 1. Create a new Heroku app:
 You need to login first  
 
 ```bash
-heroku login  
+heroku login -i  
 heroku create [APP_NAME] (psscscs is taken ;))
 ```
 
