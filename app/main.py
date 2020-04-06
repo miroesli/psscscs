@@ -7,12 +7,9 @@ from app.api import ping_response, start_response, move_response, end_response
 from app.utils.data_to_state import translate
 from app.utils.alphaNNet import AlphaNNet
 from app.utils.agent import Agent
-from app.utils.heroku_session import load_session
 
 from numpy import reshape
 import numpy as np
-
-from tensorflow.compat.v1.keras.backend import set_session
 
 # The server runs the main method from the root - we can change this by using
 # the os library to change the directory where it is being called from.
@@ -113,7 +110,6 @@ application = bottle.default_app()
 with open(DEFAULT_MODEL_CONFIG_PATH+".json", "r") as config_file:
     config = json.load(config_file)
 
-set_session(load_session())
 model = AlphaNNet(**config)
 t = config['train']  # this would be if we want to train via this api also
 snake = Agent(nnet=model, training=t)
