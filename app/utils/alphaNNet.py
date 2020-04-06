@@ -1,5 +1,7 @@
 from tensorflow import keras as ks
 from numpy import array
+import tensorflow as tf
+
 
 models_fp = 'app/models/'
 
@@ -15,7 +17,7 @@ class AlphaNNet:
     #def __init__(self, model=None, in_shape=None):
         try:
             self.nnet = ks.models.load_model(models_fp + model)
-            self.nnet._make_predict_function()
+            #self.nnet._make_predict_function()
         except IOError: #file not found
             print('no model found')
             self.nnet = ks.Sequential([
