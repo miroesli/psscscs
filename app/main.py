@@ -3,15 +3,18 @@ import os
 import random
 import bottle
 
-from api import ping_response, start_response, move_response, end_response
-from utils.data_to_state import translate
-from utils.alphaNNet import AlphaNNet
-from utils.agent import Agent
+from app.api import ping_response, start_response, move_response, end_response
+from app.utils.data_to_state import translate
+from app.utils.alphaNNet import AlphaNNet
+from app.utils.agent import Agent
+
+from numpy import reshape
+import numpy as np
 
 # The server runs the main method from the root - we can change this by using
 # the os library to change the directory where it is being called from.
 DEFAULT_MODEL_CONFIG_PATH = "./app/settings/default"
-VERBOSE = True
+VERBOSE = False
 
 
 @bottle.route('/')
@@ -74,10 +77,14 @@ def move():
 
     directions = ['up', 'down', 'left', 'right']
 
-    # TODO: add agent moves, if training
+    _ = translate(data)
+    #print(np.array(_).shape)
+    #print(_)
+    #moves = snake.make_moves([_])
+    #print(moves)
 
     return {
-        'move': directions[snake.make_move(translate(data)[0])],
+        'move': directions[snake.make_moves([_])[0]],
         'shout': 'import time;print("\U0001F635");time.sleep(10);'
     }
 
@@ -85,7 +92,7 @@ def move():
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-    model.save(config['model'])
+    #model.save(config['model'])
     """
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.

@@ -1,10 +1,10 @@
 from numpy import reshape, argmax
 from numpy.random import choice
-
+import numpy as np
 
 class Agent:
     
-    def __init__(self, nnet, snake_ids, training=False):
+    def __init__(self, nnet, snake_ids=[], training=False):
         self.nnet = nnet
         self.training = training
         if training:
@@ -12,7 +12,7 @@ class Agent:
             self.policies = {i:[] for i in snake_ids}
             self.moves = {i:[] for i in snake_ids}
     
-    def make_moves(self, states, snake_ids):
+    def make_moves(self, states, snake_ids=[]):
         X = reshape(states, (-1, len(states[0]), len(states[0][0]), 3))
         Y = self.nnet.pi(X)
         if self.training:
