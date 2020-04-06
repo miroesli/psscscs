@@ -9,10 +9,27 @@ Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 1. create the virtualenv  
 `python3 -m venv envs`  
 `source envs/bin/activate`  
-`pip install -r requirements.txt`  
-2. Run the server  
+`pip install -r requirements.txt`   
+2. Select your model  
+`vi app/settings/default.yml`  #change model param here, or create your own config file  
+pass this config file into the app/main.py file, near the bottom   
+3. Run the server  
 `gunicorn app.main:application`   
     
+
+## Run the snake using Yang's cool game engine  
+`python app/mytest_model.py`  
+Once prompted enter model name, eg, `Network_No.15.h5`    
+  
+
+## Battlesnake official game engine  
+Download the binary game engine it's so much easier.  
+Go into the folder and run  
+`./engine dev`  
+You now have a server running locally at http://localhost:3010  
+Go here and add the URL of your running snake  
+    
+
 ## Project specific info  
 Currently a 3 layer nn is used for prediction. While 8 layers are derived from the input, AlphaGo is not being utilized, need to do this.  
 
