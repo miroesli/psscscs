@@ -1,6 +1,7 @@
 from numpy import reshape, argmax
 from numpy.random import choice
 import numpy as np
+from tensorflow.python.keras.backend import set_session
 
 class Agent:
     
@@ -15,6 +16,7 @@ class Agent:
     def make_moves(self, states, snake_ids=[]):
         X = reshape(states, (-1, len(states[0]), len(states[0][0]), 3))
         with self.nnet.graph.as_default():
+            set_session(self.nnet.sess)
             Y = self.nnet.pi(X)
         if self.training:
             moves = [choice([0, 1, 2, 3], p=y) for y in Y]

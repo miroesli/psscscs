@@ -1,7 +1,7 @@
 from tensorflow import keras as ks
 from numpy import array
 import tensorflow as tf
-
+from tensorflow.python.keras.backend import set_session
 
 models_fp = 'app/models/'
 
@@ -14,10 +14,13 @@ class AlphaNNet:
         in_shape=None,
         **config): 
 
+        self.sess = tf.Session()
+        self.graph = tf.get_default_graph()
+        set_session(self.sess)
     #def __init__(self, model=None, in_shape=None):
         try:
             self.nnet = ks.models.load_model(models_fp + model)
-            self.graph = tf.get_default_graph()
+            #self.graph = tf.get_default_graph()
             self.nnet._make_predict_function()
         except IOError: #file not found
             print('no model found')
