@@ -14,7 +14,8 @@ class Agent:
     
     def make_moves(self, states, snake_ids=[]):
         X = reshape(states, (-1, len(states[0]), len(states[0][0]), 3))
-        Y = self.nnet.pi(X)
+        with self.nnet.graph.as_default():
+            Y = self.nnet.pi(X)
         if self.training:
             moves = [choice([0, 1, 2, 3], p=y) for y in Y]
             for i in range(len(states)):

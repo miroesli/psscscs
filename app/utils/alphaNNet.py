@@ -17,7 +17,8 @@ class AlphaNNet:
     #def __init__(self, model=None, in_shape=None):
         try:
             self.nnet = ks.models.load_model(models_fp + model)
-            #self.nnet._make_predict_function()
+            self.graph = tf.get_default_graph()
+            self.nnet._make_predict_function()
         except IOError: #file not found
             print('no model found')
             self.nnet = ks.Sequential([
