@@ -11,9 +11,27 @@ class AlphaNNet:
             self.nnet = ks.models.load_model(model)
         elif in_shape:
             self.nnet = ks.Sequential([
-                ks.layers.Conv2D(12, (3, 3), activation = 'relu', input_shape = in_shape),
+                ks.layers.Conv2D(32, (5, 5), use_bias=False, input_shape=ins),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
+                ks.layers.Conv2D(32, (3, 3), use_bias=False),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
+                ks.layers.Conv2D(64, (3, 3), use_bias=False),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
+                ks.layers.Conv2D(64, (3, 3), use_bias=False),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
+                ks.layers.Conv2D(128,(3, 3), use_bias=False),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
+                ks.layers.Conv2D(128,(3, 3), use_bias=False),
+                ks.layers.BatchNormalization(axis=3),
+                ks.layers.Activation('selu'),
                 ks.layers.Flatten(),
-                ks.layers.Dense(4, activation = 'softmax')
+                ks.layers.Dense(3),
+                ks.layers.Activation('sigmoid')
             ])
             self.nnet.compile(
                 optimizer = ks.optimizers.Adam(lr = 0.0005), # lr < 0.001

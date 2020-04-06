@@ -1,4 +1,5 @@
 from random import sample, choice, random
+from numpy import array, reshape, rot90
 
 from utils.snake import Snake
 
@@ -7,11 +8,13 @@ WALL = 1.0
 HUNGER_m = 0.01
 SNAKE_m = 0.02
 HEAD_m = 0.04
+MY_HEAD = -1.0
 
 
 class Game:
-
-    def __init__(self, height, width, snake_cnt):
+    
+    def __init__(self, height, width, snake_cnt, health_dec = 1):
+        
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
         # https://github.com/BattlesnakeOfficial/engine/blob/master/rules/create.go
@@ -21,27 +24,36 @@ class Game:
                 (1, width//2), (height//2, width - 2), (height - 2, width//2), (height//2, 1)
             ],
             snake_cnt)
-
+        
         # I changed the data structure to speed up the game
         # empty_positions is used to generate food randomly
-        self.empty_positions = {(y, x) for y in range(height)
-                                for x in range(width)}
-
+        self.empty_positions = {(y, x) for y in range(height) for x in range(width)}
+        
         self.height = height
         self.width = width
         self.snake_cnt = snake_cnt
+        self.health_dec = health_dec
         
         self.snakes = [Snake(ID, 100, [positions[ID]] * 3) for ID in range(snake_cnt)]
         for snake in self.snakes:
             self.empty_positions.remove(snake.body[0])
-
+        
         self.food = set(sample(self.empty_positions, snake_cnt))
         for food in self.food:
             self.empty_positions.remove(food)
-
+        
         # two board sets are used to reduce run time
         self.heads = {snake.body[0]: {snake} for snake in self.snakes}
         self.bodies = {snake.body[i] for snake in self.snakes for i in range(1, len(snake.body))}
+        
+        # log
+        self.wall_collision = 0
+        self.body_collision = 0
+        self.head_collision = 0
+        self.starvation = 0
+        self.food_eaten = 0
+        self.game_length = 0
+    
     # game rules
     # https://github.com/BattlesnakeOfficial/rules/blob/master/standard.go
     # this link below is what they use for the engine
@@ -52,29 +64,38 @@ class Game:
         if Bob:
             snake_ids1 = list(range(sep))
             snake_ids2 = list(range(sep, self.snake_cnt))
+            last_moves1 = {i: choice((0, 1, 2, 3)) for i in range(sep)}
+            last_moves2 = {i: choice((0, 1, 2, 3)) for i in range(sep, self.snake_cnt)}
         else:
             snake_ids = list(range(self.snake_cnt))
+            last_moves = {i: choice((0, 1, 2, 3)) for i in range(self.snake_cnt)}
         
         snakes = self.snakes
         # game procedures
         while len(snakes) > 1:
-
+            
+            self.game_length += 1
+            
             # ask for moves
             if Bob:
-                # one set might be empty
-                # in that case the team with any snakes left wins
+                # to speed up the competing process
+                # the team with more snakes left wins
                 if len(snake_ids1) == 0:
-                    return snake_ids2[0]
+                    return sep
                 if len(snake_ids2) == 0:
-                    return snake_ids1[0]
-                states1 = [self.make_state(snake) for snake in snakes if snake.id < sep]
-                states2 = [self.make_state(snake) for snake in snakes if snake.id >= sep]
+                    return 0
+                states_list1 = [self.make_state(snake, last_moves1[snake.id]) for snake in snakes if snake.id < sep]
+                states1 = reshape(states_list1, (-1, len(states_list1[0]), len(states_list1[0][0]), 3))
+                states_list2 = [self.make_state(snake, last_moves2[snake.id]) for snake in snakes if snake.id >= sep]
+                states2 = reshape(states_list2, (-1, len(states_list2[0]), len(states_list2[0][0]), 3))
                 moves1 = Alice.make_moves(states1, snake_ids1)
                 moves2 = Bob.make_moves(states2, snake_ids2)
                 i = 0
                 j = 0
             else:
-                states = [self.make_state(snake) for snake in snakes]
+                states_list = [self.make_state(snake, last_moves[snake.id]) for snake in snakes]
+                states = reshape(states_list, (-1, len(states_list[0]), len(states_list[0][0]), 3))
+                # moves are relative to last move: turn left, go straight, or turn right
                 moves = Alice.make_moves(states, snake_ids)
                 i = 0
             
@@ -82,14 +103,19 @@ class Game:
             for snake in snakes:
                 if Bob:
                     if snake.id < sep:
-                        new_head, old_head, tail = snake.move(moves1[i])
+                        move = (moves1[i] + last_moves1[snake.id] - 1) % 4
+                        last_moves1[snake.id] = move
                         i += 1
                     else:
-                        new_head, old_head, tail = snake.move(moves2[j])
+                        move = (moves2[j] + last_moves2[snake.id] - 1) % 4
+                        last_moves2[snake.id] = move
                         j += 1
                 else:
-                    new_head, old_head, tail = snake.move(moves[i])
+                    move = (moves[i] + last_moves[snake.id] - 1) % 4
+                    last_moves[snake.id] = move
                     i += 1
+                # make the move
+                new_head, old_head, tail = snake.move(move)
                 # update board sets
                 try:
                     # several heads might come to the same cell
@@ -112,8 +138,8 @@ class Game:
             
             # reduce health
             for snake in snakes:
-                snake.health -= 1
-
+                snake.health -= self.health_dec
+            
             # remove dead snakes
             # I have checked the code of the battlesnake game
             # their algorithm for checking collisions is shit
@@ -125,18 +151,22 @@ class Game:
                 # check for wall collisions
                 if head[0] < 0 or head[0] >= self.height or head[1] < 0 or head[1] >= self.width:
                     kills.add(snake)
+                    self.wall_collision += 1
                 # check for body collisions
                 elif head in self.bodies:
                     kills.add(snake)
+                    self.body_collision += 1
                 # check for head on collisions
                 elif len(self.heads[head]) > 1:
                     for s in self.heads[head]:
                         if len(snake.body) <= len(s.body) and s != snake:
                             kills.add(snake)
+                            self.head_collision += 1
                             break
                 # check for starvation
                 elif snake.health <= 0:
                     kills.add(snake)
+                    self.starvation += 1
             # remove from snakes set
             for snake in kills:
                 # update board sets
@@ -179,6 +209,7 @@ class Game:
                     self.food.remove(food)
                     snake.health = 100
                     snake.grow()
+                    self.food_eaten += 1
             
             # spawn food
             if len(self.food) == 0:
@@ -197,11 +228,12 @@ class Game:
         # return the winner if there is one
         return tuple(snakes)[0].id if snakes else None
     
-    def make_state(self, you):
+    def make_state(self, you, last_move):
         """ Process the data and translate them into a grid
         
         Args:
             you: a Snake object define by snake.py; represents this snake
+            last_move: the last move you made; one of {0, 1, 2, 3}
         
         Return:
             grid: a grid that represents the game
@@ -228,7 +260,8 @@ class Game:
             board[body[0][0]][body[0][1]][0] = (len(body) - (length_minus_half)) * HEAD_m
             # get the rest of the body
             dist = 1
-            for i in range(len(body)-1, 0, -1):
+            # Don't do the body[-1:0:-1] slicing. It will copy the list
+            for i in range(len(body) - 1, 0, -1):
                 board[body[i][0]][body[i][1]][1] = dist * SNAKE_m
                 dist += 1
         
@@ -237,11 +270,15 @@ class Game:
         
         # get my head
         head_y, head_x = you.body[0]
-        board[head_y][head_x] = [1.0 - you.health/100.0] * 3
+        board[head_y][head_x] = [MY_HEAD] * 3
         
         # from this point, all positions are measured relative to our head
         for y in range(self.height):
             for x in range(self.width):
                 grid[y - head_y + center_y][x - head_x + center_x] = board[y][x]
         
-        return grid
+        # k = 0 => identity
+        # k = 1 => rotate left
+        # k = 2 => rotate 180
+        # k = 3 => rotate right
+        return rot90(array(grid), k = last_move)

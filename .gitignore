@@ -6,7 +6,6 @@ battlesnake
 engine
 *mytest*
 *.old
-*.h5
 venvs/
 *.egg-info
 app/models/*.params
