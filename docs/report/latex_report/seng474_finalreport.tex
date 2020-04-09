@@ -333,23 +333,23 @@ food).
 
 Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake’s view of
 state $s_0$ (not including you since you explicitly made action a), and $a_i
-  \in {0,1,2}$ is the action it chose. There is one exception, if a snake made
-an action and died right after, then the assigned value is simply 0, since it
-is usually not relevant to what last moves other snakes chose, unless it died
+  \in {0,1,2}$ is the action it chose. There is one exception; if a snake made
+an action and died right after, then the assigned value is simply 0 since it
+is usually not relevant to what last moves other snakes chose unless it died
 due to head on head collision.
 
 Since the training data is massive, a good trick is to obtain a sample from the
 training data. There are various ways to sample the data, but one thing to
 realize is that late game might be far more important than the early game. The
 sampling method used in the training algorithm makes an exponentially growing
-gap between samples counting from the last move to the first move. Another trick
-is to use batch normalization between layers in the network, because
+gap between samples counting from the last move, to the first. Another trick
+is to use batch normalization between layers in the network because
 reinforcement learning tends to change the input distribution, it introduces
 instability to the learning, and batch normalization can address that problem.
 Another problem we encountered during training is that after some number of
-iterations, the snakes realize that if it run into something they die, so they
-come up with the so called “chicken snake” strategy, where one snake just
-circling around and does nothing. In other words, it stucks at a local optimum.
+iterations, the snakes realize that if it runs into something they die, so they
+come up with the so-called “chicken snake” strategy, where one snake just
+moves in circles and does nothing. In other words, it is stuck at a local optimum.
 To avoid this, we let the snake learn in a modified environment where every turn
 the health is reduced by 9, so it will quickly die from starvation and force it
 to go look for food. After that, we put it into the original environment. We
@@ -358,8 +358,8 @@ decrement value. We still want it to realize that once the health gets to 1, it
 will die next turn, so the decrement must be a factor of 99. If we prime
 factorize 99, we can see the only options are 1, 3, 9, 11, 33, 99.
 
-After training, the new trained network is to be compared with the old network.
-A number of games are played between them (can use different competing rules,
+After training, the newly trained network is to be compared with the old network.
+Several games are played between them (can use different competing rules,
 1v3 or 2v2, etc.). If the new network’s win rate surpasses a threshold, it will
 replace the old one. A good way to select the threshold is to use a binomial
 distribution to figure out a value such that a worse network (say a win rate
@@ -408,12 +408,12 @@ the snake.
 
 Other experiments that we have conducted were to compare 16 different
 generations against the best training snake provided by the battlesnake team. We
-compared the winrate, average time steps in a game, average food eaten in a
-game, average number of collisions in a game, and average number of heads hunted
-in a game in figure \ref{fig:winrate}, \ref{fig:time_steps},
+compared the winrate, the average time steps in a game, the average food eaten
+in a game, the average number of collisions in a game, and the average number of
+heads hunted in a game in figure \ref{fig:winrate}, \ref{fig:time_steps},
 \ref{fig:food_eaten}, \ref{fig:collisions}, \ref{fig:heads_hunted} respectively.
 Generally, we noticed that as the number of model generations/ training
-iterations increased, the winrate, average time steps, food eaten, and heads
+iterations increased the winrate, average time steps, food eaten, and heads
 hunted increased, while the average number of collisions decreased which are all
 consistent with what we'd predict with the increasing winrate as it is getting a
 better understanding of the rules of the game.
