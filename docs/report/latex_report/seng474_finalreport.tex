@@ -378,23 +378,107 @@ following results as seen in figure \ref{fig:cause_of_death} and figure
 
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=\linewidth]{cause_of_death}
+  \includegraphics[width=300px]{cause_of_death}
   \caption{Cause of Death}
   \label{fig:cause_of_death}
 \end{figure}
 
 \FloatBarrier
 
+Figure \ref{fig:cause_of_death} above, further analyses the cause of death for
+the first 45 generations. The algorithm quickly learns the basics of the game as
+the deaths by starvation and wall collisions are close to zero following the 6th
+generation.  However, interestingly, the number of deaths by head collisions is
+quite high.  This is likely due to the algorithm not being able to control its
+aggressiveness between smaller and larger snakes.
+
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=\linewidth]{average_food_eaten}
+  \includegraphics[width=300px]{average_food_eaten}
   \caption{Average Food Eaten}
   \label{fig:average_food_eaten}
 \end{figure}
 
 \FloatBarrier
 
-%maybe add a bit more discussion here.
+Figure \ref{fig:average_food_eaten} above depicts the average food eaten per
+game as well as the game length. We see an upward trend on the game length,
+suggesting that further training would result in an overall smarter AI for
+the snake.
+
+Other experiments that we have conducted were to compare 16 different
+generations against the best training snake provided by the battlesnake team. We
+compared the winrate, average time steps in a game, average food eaten in a
+game, average number of collisions in a game, and average number of heads hunted
+in a game in figure \ref{fig:winrate}, \ref{fig:time_steps},
+\ref{fig:food_eaten}, \ref{fig:collisions}, \ref{fig:heads_hunted} respectively.
+Generally, we noticed that as the number of model generations/ training
+iterations increased, the winrate, average time steps, food eaten, and heads
+hunted increased, while the average number of collisions decreased which are all
+consistent with what we'd predict with the increasing winrate as it is getting a
+better understanding of the rules of the game.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=300px]{winrate}
+  \caption{Winrate}
+  \label{fig:winrate}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=300px]{time_steps}
+  \caption{Average Number of Time Steps}
+  \label{fig:time_steps}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=300px]{food_eaten}
+  \caption{Average Number of Food Eaten}
+  \label{fig:food_eaten}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=300px]{collisions}
+  \caption{Average Number of Collisions}
+  \label{fig:collisions}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=300px]{heads_hunted}
+  \caption{Average Number of Heads Hunted}
+  \label{fig:heads_hunted}
+\end{figure}
+\FloatBarrier
+
+For the final experiment, three different generations of the snakes were added
+to the Battlesnake arena to compete against other snake AIs. All performed quite
+well and currently in the top 150 of the leaderboard. The 10th and 15th
+generation AlphaSnake Zero currently sits at 147th and 135th position on the
+leaderboards respectively. The 145th generation is currently 100th in the world.
+This suggests that creating a top placing snake is possible given that there is
+still a lot of room for improvement and optimization for the AI.
+
+The next steps for improving our algorithm include the following:
+
+\begin{enumerate}
+  \item Further experimentation with the look-ahead algorithm and in particular
+        using the Monte Carlo Tree search algorithm
+  \item Conduct further testing with varying input parameters for model training
+  \item See how our model performs as we continue to increase the number of
+        training iterations and if it reaches more local optimums
+  \item Consider implementing better heuristics
+  \item Implement a loss function
+\end{enumerate}
+
+
 
 \subsubsection*{Acknowledgments}
 
@@ -403,10 +487,10 @@ questions we had and providing all the help needed to complete the project.
 
 \newpage
 
-% \small
+\small
 
-% \bibliographystyle{ieeetr}
-\bibliographystyle{unsrt}
+\bibliographystyle{ieeetr}
+% \bibliographystyle{unsrt}
 \bibliography{bibliography-project}
 
 % \printbibliography
