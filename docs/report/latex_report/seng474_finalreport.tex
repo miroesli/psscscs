@@ -168,12 +168,12 @@ world around you, so a 21x21 board is needed to percieve the original board in
 the worst case (if we are at the edge). Additionally, every snake has
 its own view of the board so this is replicated 3 more times.
 
-There are essentially three fundamental things in the game, things that: if you
-run into you die (body and wall), if you run into you grow (food),
-and if you run into another snake will die (head). Thus, the game board
-is classified into 3 channels. The first layer is the picture of all the snakes’
-heads. The second one is for all the 'deadly' obstacles (bodies and walls). And
-the last one shows all the food on the board. In all layers, 0 means an empty cell.
+There are essentially three fundamental things in the game; if you run into you
+die (body and wall), if you run into you grow (food), and if you run into
+another snake will die (head). Thus, the game board is classified into 3
+channels. The first layer is the picture of all the snakes’ heads. The second
+one is for all the 'deadly' obstacles (bodies and walls). And the last one shows
+all the food on the board. In all layers, 0 means an empty cell.
 
 In the first layer, the value of a snake’s head is the snake’s length relative
 to the current player, so a negative value means a shorter snake’s head and vice
@@ -373,9 +373,8 @@ consists of 6 convolutional hidden layers, with 32, 32, 64, 64, 128, 128 filters
 of size 3x3, respectively. It used “selu” as activation function
 \cite{SeluPaper}, and batch normalization layers are added between the weights
 and activation functions. After running for 154 iterations, we obtained the
-following results.
-
-\ref{fig:cause_of_death}
+following results as seen in figure \ref{fig:cause_of_death} and figure
+\ref{fig:average_food_eaten} below.
 
 \begin{figure}[!ht]
   \centering
@@ -386,8 +385,6 @@ following results.
 
 \FloatBarrier
 
-\ref{fig:average_food_eaten}
-
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=\linewidth]{average_food_eaten}
@@ -396,6 +393,8 @@ following results.
 \end{figure}
 
 \FloatBarrier
+
+%maybe add a bit more discussion here.
 
 \subsubsection*{Acknowledgments}
 
