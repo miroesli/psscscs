@@ -105,9 +105,8 @@ snakes die). If it runs into a food, its length will grow by 1, and its health
 point resets to 100. Every turn, all snake’s health will decrease by 1, and once
 it reaches 0 the snake dies. The last snake alive becomes the winner of the
 game. If no snakes live, it is considered a draw. See the reference for a more
-detailed description \cite{BattlesnakeDoc}.
-
-\ref{fig:snake}
+detailed description \cite{BattlesnakeDoc}. An image of such a game is shown
+below in figure \ref{fig:snake}.
 
 % Figure Here
 
@@ -128,9 +127,8 @@ network to compute the value (roughly interpreted as win rate) of the current
 game board, and also a policy to guide the next action. As this is a
 reinforcement learning problem, there is no true label that we can assign to the
 training data. Instead, a Monte Carlo Tree Search is used to get a good
-estimate of the optimal policy.
-
-\ref{fig:mcts}
+estimate of the optimal policy. See figure \ref{fig:mcts} to see the steps of
+the Monte Carlo tree search algorithm.
 
 \begin{figure}[!ht]
   \centering
@@ -148,9 +146,8 @@ network, with data being recorded for training. For each turn of the game, we ke
 the information of the game board (the state), the move each snake made (the
 action), the computed Q values, the transition probability (expanded on later).
 Then we use the data to train the network. After training, the new network competes
-agains the old one and further replace it if performance is better.
-
-\ref{fig:overview_of_model}
+agains the old one and further replace it if performance is better. A general
+overview of this process is shown in figure \ref{fig:overview_of_model} below.
 
 \begin{figure}[!ht]
   \centering
