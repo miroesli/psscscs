@@ -1,4 +1,4 @@
-\documentclass{article}
+﻿\documentclass{article}
 
 % if you need to pass options to natbib, use, e.g.:
 %     \PassOptionsToPackage{numbers, compress}{natbib}
@@ -295,9 +295,9 @@ previous step, then we want the new $Q^*(s_0,a)$ to be
   \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
     s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Psi(s_o,a,s_1)\times
   \max_{a_i}Q(s_1,a) = \Psi(s_0,a,s_1)\times
-  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+\sum\limits_{s_i\neq
+  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+\sum\limits_{s_i\neq
     s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
-  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q^*(s_1,a_i)]+Q(s_0,a)
+  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+Q(s_0,a)
 \end{dmath}
 
 We can see that if the max of its successor was unchanged then the new value
@@ -328,7 +328,7 @@ $\overrightarrow{A}$, a vector of actions of snakes (omitting the randomness of
 food).
 
 \begin{equation}
-  \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s-I,1),Q(s_i,2) \rangle)}_{a_i}
+  \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s_i,1),Q(s_i,2) \rangle)}_{a_i}
 \end{equation}
 
 Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake’s view of
