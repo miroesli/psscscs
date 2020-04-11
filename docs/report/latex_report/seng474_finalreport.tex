@@ -30,6 +30,9 @@
 % \usepackage{cite}           % citing references
 % \usepackage{biblatex}
 \usepackage{graphicx}       % for images
+\usepackage{soul}           % highlight text
+\usepackage{xcolor}          % highlight in math
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
 \usepackage[section]{placeins} % for overflow on text after figures
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -92,6 +95,10 @@
   project, we try to find an algorithm to generate an agent that performs well
   in a multiagent synchronous strategy game.
 \end{abstract}
+
+\begin{center}
+  \hl{Note: Version 2 changes are highlighted in yellow.}
+\end{center}
 
 \section{Introduction}
 
@@ -290,12 +297,16 @@ $\max_{a_i}Q(s_1,a_i)$ was updated to $\max_{a_i}Q^*(s_1,a_i)$ during the
 previous step, then we want the new $Q^*(s_0,a)$ to be
 
 \begin{dmath}
-  \Psi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
-    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
-  \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Psi(s_o,a,s_1)\times
-  \max_{a_i}Q(s_1,a) = \Psi(s_0,a,s_1)\times
-  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+\sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
-  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+Q(s_0,a)
+  \Psi(s_0,a,s_1) \times \max_{a_i}Q^*(s_1,a_i) + \sum\limits_{s_i\neq
+    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) =
+  \Psi(s_0,a,s_1)\times\max_{a_i}Q^*(s_1,a_i) +
+  \mathcolorbox{yellow}{\sum\limits_{s_i}} \Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j)
+  - \Psi(\mathcolorbox{yellow}{s_0},a,s_1) \times \max_{a_i}Q(s_1,a) =
+  \Psi(s_0,a,s_1) \times [\max_{a_i}Q^*(s_1,a_i) -
+  \max_{a_i}\mathcolorbox{yellow}{Q(s_1,a_i)]+\sum\limits_{s_i}}
+  \Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1) \times
+  [\max_{a_i}Q^*(s_1,a_i) - \max_{a_i}\mathcolorbox{yellow}{Q(s_1,a_i)}] +
+  Q(s_0,a)
 \end{dmath}
 
 We can see that if the max of its successor was unchanged then the new value
@@ -326,7 +337,7 @@ $\overrightarrow{A}$, a vector of actions of snakes (omitting the randomness of
 food).
 
 \begin{equation}
-  \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s_i,1),Q(s_i,2) \rangle)}_{a_i}
+  \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(\mathcolorbox{yellow}{s_i},1),Q(s_i,2) \rangle)}_{a_i}
 \end{equation}
 
 Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake’s view of
@@ -473,7 +484,7 @@ The next steps for improving our algorithm include the following:
   \item See how our model performs as we continue to increase the number of
         training iterations and if it reaches more local optimums
   \item Consider implementing better heuristics
-  \item Implement a loss function
+  \item \hl{Consider using a better computing device to increase training efficiency}
 \end{enumerate}
 
 \section{Conclusion}
