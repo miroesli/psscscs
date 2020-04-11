@@ -292,11 +292,9 @@ previous step, then we want the new $Q^*(s_0,a)$ to be
 \begin{dmath}
   \Psi(s_0,a,s_1)\times \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
     s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
-  \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i\neq
-    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Psi(s_o,a,s_1)\times
+  \max_{a_i}Q^*(s_1,a_i)+\sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) - \Psi(s_o,a,s_1)\times
   \max_{a_i}Q(s_1,a) = \Psi(s_0,a,s_1)\times
-  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+\sum\limits_{s_i\neq
-    s_1}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
+  [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+\sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j}Q(s_i,a_j) = \Psi(s_0,a,s_1)\times
   [\max_{a_i}Q^*(s_1,a_i)-\max_{a_i}Q(s_1,a_i)]+Q(s_0,a)
 \end{dmath}
 
