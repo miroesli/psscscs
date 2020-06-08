@@ -60,7 +60,7 @@
   Faculty of Engineering \\
   University of Victoria \\
   Victoria, CA V8P 5C2 \\
-  \texttt{vlkraak@gmail.com} \\
+  \texttt{lkraak@uvic.ca} \\
   \And
   Michail Roesli  \\
   Faculty of Engineering \\
@@ -101,11 +101,11 @@
 Battlesnake is a synchronous strategy game. It is simply a multiplayer version
 of the classic game Snake. The version we are training with is a 11x11 game
 board with 4 snakes. In each round, players choose an action from the space
-\textit{left,right,up,down}, the snake¡¯s head and body will then move accordingly. If
-a snake¡¯s head runs into any obstacle (a snake¡¯s body or wall), it dies. If it
-runs into another snake¡¯s head, the shorter snake dies (in a tied situation both
+\textit{left,right,up,down}, the snake's head and body will then move accordingly. If
+a snake's head runs into any obstacle (a snake's body or wall), it dies. If it
+runs into another snake's head, the shorter snake dies (in a tied situation both
 snakes die). If it runs into a food, its length will grow by 1, and its health
-point resets to 100. Every turn, all snake¡¯s health will decrease by 1, and once
+point resets to 100. Every turn, all snake's health will decrease by 1, and once
 it reaches 0 the snake dies. The last snake alive becomes the winner of the
 game. If no snakes live, it is considered a draw. See the reference for a more
 detailed description \cite{BattlesnakeDoc}. An image of such a game is shown
@@ -145,12 +145,16 @@ the Monte Carlo tree search algorithm.
 \section{Method}
 
 In each iteration, a number of games are played using the current neural
-network, with data being recorded for training. For each turn of the game, we keep
-the information of the game board (the state), the move each snake made (the
-action), the computed Q values (estimated win rate), the transition probability (explained later).
-Then we use the data to train the network. After training, the new network competes
-against the old one and further replace it if performance is better. A general
-overview of this AI is shown in figure \ref{fig:overview_of_model} below. CNN stands for convolutional neural network. The CNN takes as input a state representing the game from a player's point of view, and computes as output the Q values of each action. Then a policy (a probability distribution of all actions) is computed to guide the AI.
+network, with data being recorded for training. For each turn of the game, we
+keep the information of the game board (the state), the move each snake made
+(the action), the computed Q values (estimated win rate), the transition
+probability (explained later). Then we use the data to train the network. After
+training, the new network competes against the old one and further replace it if
+performance is better. A general overview of this AI is shown in figure
+\ref{fig:overview_of_model} below. CNN stands for convolutional neural network.
+The CNN takes as input a state representing the game from a player's point of
+view, and computes as output the Q values of each action. Then a policy (a
+probability distribution of all actions) is computed to guide the AI.
 
 \begin{figure}[!ht]
   \centering
@@ -165,21 +169,22 @@ For the input of the network, we need something that can recover enough
 information of the game board. The designed state representation is as
 follows: The state is a 21x21x3 tensor. The game board is only 11x11, but the
 network will quickly struggle to identify where its own head lies. To combat this,
-the view of the game is centered at the snake¡¯s head, allowing immediate
+the view of the game is centered at the snake's head, allowing immediate
 recognition of relative position. Imagine you are the snake and you view the
 world around you, so a 21x21 board is needed to percieve the original board in
 the worst case (if we are at the edge). Additionally, every snake has
-its own view of the board. The objects in the game are also classified into three channels explained below.
+its own view of the board. The objects in the game are also classified into
+three channels explained below.
 
 There are essentially three fundamental things in the game: things that if you run into you
-die (body and wall); if you run into you grow (food); and if you run into
-some snake will die (head). Thus, the game board is classified into 3
-channels. The first layer is the picture of all the snakes¡¯ heads. The second
+die (body and wall); if you run into, you grow (food); and if you run into
+some snake, you die (head). Thus, the game board is classified into 3
+channels. The first layer is the picture of all the snakes' heads. The second
 one is for all the 'deadly' obstacles (bodies and walls). And the last one shows
 all the food on the board. In all layers, 0 means an empty cell.
 
-In the first layer, the value of a snake¡¯s head is the snake¡¯s length relative
-to the current player, so a negative value means a shorter snake¡¯s head and vice
+In the first layer, the value of a snake's head is the snake's length relative
+to the current player, so a negative value means a shorter snake's head and vice
 versa. Since a snake of the same length as you also kills you, the value of its
 head is also negative. Overall, the value roughly tells you how dangerous a
 block is. The formula for computing the head value is simply
@@ -191,7 +196,7 @@ block is. The formula for computing the head value is simply
 where the multiplier is to keep the value in the range of [-1, 1] for training
 purposes. The 0.5 solves two problems, one mentioned earlier about the snake of
 same length, and it avoids the value inside the brackets being zero, causing an
-¡°invisible head¡±.
+'invisible head'.
 
 In the second layer, the wall is simply represented with 1. We also need
 something to recover the direction of a body bock, since it holds the
@@ -223,7 +228,7 @@ Note that for this representation of states, it is impossible to recover the hea
 according to the experience of Battlesnake tournaments, it is not a useful
 information, as death due to starvation almost never happens in high level
 games. We use 101 instead of 100 to avoid the value inside the brackets being
-zero, resulting in ¡°invisible food¡±.
+zero, resulting in 'invisible food'.
 
 For the output of the network, we need something that can guide the action to
 take. A policy could be a good choice, but unlike the game of Go, where a move
@@ -243,7 +248,7 @@ meaningless to evaluate. If the snake is always facing up, the output space can
 be transformed into \textit{turn left,go straight,turn right}, represented by
 numeric values {0,1,2}. It simplifies the network and training. Although it is
 true that only for the very first move, there are technically four choices, but
-we don¡¯t care about that one move so much that we want to expand the output
+we don't care about that one move so much that we want to expand the output
 space. During the training, we can also make the reflections of the board and Q
 value vectors to force the network to realize symmetry, and hopefully reduce
 overfitting. Once we have the 3 dimensional vector $\langle Q(s,0),Q(s,1),Q(s,2)
@@ -282,13 +287,13 @@ have
   Q(s_0, a) = \sum\limits_{s_i}\Psi(s_0,a,s_i)\max_{a_j} Q(s_i,a_j)
 \end{equation}
 
-This equation is the core part of AlphaSnake Zero¡¯s training algorithm. We can
+This equation is the core part of AlphaSnake Zero's training algorithm. We can
 now refine the Q value vector by updating its explored entry $Q(s_0,a)$. A
 complete record of a game play gives a chain of states for each snake. We update
 the Q values recursively, from the very last state to the first. We know what
 $\max_{a_i}Q(s_1,a_i)$ is, namely the max value of the successor of $s_0$ recorded
 in the chain of states. Assuming the network is already somewhat accurate, we
-don¡¯t want to change $Q(s_0,a)$ unless $\max_{a_i}Q(s_1,a_i)$ has been refined. If
+don't want to change $Q(s_0,a)$ unless $\max_{a_i}Q(s_1,a_i)$ has been refined. If
 $\max_{a_i}Q(s_1,a_i)$ was updated to $\max_{a_i}Q^*(s_1,a_i)$ during the
 previous step, then we want the new $Q^*(s_0,a)$ to be
 
@@ -313,7 +318,7 @@ the sigmoid function. In practice, if the network is already somewhat good, a
 bad value should almost never happen, but we are still supposed to set the bound
 manually. If it does happen, say the new $Q^*(s_0,a)\geq 1$, then this one is
 guaranteed to be the new maximum since all other Q values is computed by sigmoid
-and thus less than 1. Then, it very likely will shoot up its parent state¡¯s Q
+and thus less than 1. Then, it very likely will shoot up its parent state's Q
 value over 1 and recursively messes up the whole chain of states. Thus, we
 assign the following bounded value to $Q^*(s_0,a)$.
 
@@ -336,7 +341,7 @@ food).
   \Psi(s_o,a,\Gamma(s_o,\langle a, a_1, \ldots , a_k \rangle )) \approx \Pi^k_{i=1}\pi_n{(\langle Q(s_i,0),Q(s_i,1),Q(s_i,2) \rangle)}_{a_i}
 \end{equation}
 
-Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake¡¯s view of
+Here $\pi_n$ is the softmax-like function, $s_i$ is the ith snake's view of
 state $s_0$ (not including you since you explicitly made action a), and $a_i
   \in {0,1,2}$ is the action it chose. There is one exception; if a snake made
 an action and died right after, then the assigned value is simply 0 since it
@@ -353,19 +358,19 @@ reinforcement learning tends to change the input distribution, it introduces
 instability to the learning, and batch normalization can address that problem.
 Another problem we encountered during training is that after some number of
 iterations, the snakes realize that if it runs into something they die, so they
-come up with the so-called ¡°chicken snake¡± strategy, where one snake just
+come up with the so-called 'chicken snake' strategy, where one snake just
 moves in circles and does nothing. In other words, it is stuck at a local optimum.
 To avoid this, we let the snake learn in a modified environment where every turn
 the health is reduced by 9, so it will quickly die from starvation and force it
 to go look for food. After that, we put it into the original environment. We
-call that ¡°learn to walk before you run¡±. Be careful with the choice of the
+call that 'learn to walk before you run'. Be careful with the choice of the
 decrement value. We still want it to realize that once the health gets to 1, it
 will die next turn, so the decrement must be a factor of 99. If we prime
 factorize 99, we can see the only options are 1, 3, 9, 11, 33, 99.
 
 After training, the newly trained network is to be compared with the old network.
 Several games are played between them (can use different competing rules,
-1v3 or 2v2, etc.). If the new network¡¯s win rate surpasses a threshold, it will
+1v3 or 2v2, etc.). If the new network's win rate surpasses a threshold, it will
 replace the old one. A good way to select the threshold is to use a binomial
 distribution to figure out a value such that a worse network (say a win rate
 less than 50\% in 2v2 games) has a negligible chance of surpassing it.
@@ -375,7 +380,7 @@ less than 50\% in 2v2 games) has a negligible chance of surpassing it.
 
 With limited computational power, we tried the algorithm on a small CNN. It
 consists of 6 convolutional hidden layers, with 32, 32, 64, 64, 128, 128 filters
-of size 3x3, respectively. It used ¡°selu¡± as activation function
+of size 3x3, respectively. It used 'selu' as activation function
 \cite{SeluPaper}, and batch normalization layers are added between the weights
 and activation functions. After running for 154 iterations, we obtained the
 following results as seen in figure \ref{fig:cause_of_death} and figure
