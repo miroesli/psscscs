@@ -7,6 +7,8 @@ engine
 *mytest*
 *.old
 venvs/
+env
+venv
 *.egg-info
 app/models/*.params
 app/models/*.json
