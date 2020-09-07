@@ -4,16 +4,9 @@ A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
 Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 **S**cience undergrads.
 
-  
-## Run the snake  
-1. create the virtualenv  
-`python3 -m venv envs`  
-`source envs/bin/activate`  
-`pip install -r requirements.txt`  
-2. Run the server  
-`cd app`  
-`python main.py`  
-3. ??  
+## Demo
+
+![7000 Iterations DQN Training](./app/gifs/gif-run-7000.gif)
   
 ## Project specific info  
 Currently a 3 layer nn is used for prediction. While 8 layers are derived from the input, AlphaGo is not being utilized, need to do this.  
@@ -24,7 +17,7 @@ This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/inde
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-#### You will need...
+## Requirements
 
 - a working Python 2.7/3.7 development environment ([getting started guide](http://hackercodex.com/guide/python-development-environment-on-mac-osx/))
 - [pip](https://pip.pypa.io/en/latest/installing.html) to install Python dependencies
@@ -45,7 +38,14 @@ Using HTTPS
 git clone https://github.com/miroesli/pssscs.git
 ```
 
-1. Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
+2. create the virtualenv  
+
+```bash
+python -m venv env
+source env/bin/activate
+```
+ 
+3. Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
 
 ```bash
 pip install -r requirements.txt
@@ -54,7 +54,8 @@ pip install -r requirements.txt
 4. Run local server:
 
 ```bash
-python app/main.py
+cd app
+python main.py
 ```
 
 5. Test your snake by sending a curl to the running snake
