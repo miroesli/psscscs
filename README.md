@@ -1,3 +1,5 @@
+This repo will be archived because of stale and outdated code. For other projects like this one see my profile or the [awesome-battlesnakes](https://github.com/xtagon/awesome-battlesnake)
+
 # PSSCSCS
 
 A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
