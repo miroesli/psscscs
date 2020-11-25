@@ -1,4 +1,4 @@
-***This repo will be archived because of stale and outdated code. Another version can be viewed [here](https://github.com/Fool-Yang/AlphaSnake-Zero). For other projects like this one see [my profile](https://github.com/miroesli) or the [awesome-battlesnakes](https://github.com/xtagon/awesome-battlesnake) repository.***
+*This no longer under development because of outdated/stale code which uses an older version of the battlesnake API. Another version can be viewed [here](https://github.com/Fool-Yang/AlphaSnake-Zero). For other projects like this one see the [awesome-battlesnakes](https://github.com/xtagon/awesome-battlesnake) repository or check out [my profile](https://github.com/miroesli).*
 
 # PSSCSCS
 
