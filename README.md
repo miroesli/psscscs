@@ -6,6 +6,11 @@ A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
 Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 **S**cience undergrads.
 
+## Presentation
+
+- Google Drive presentation [link](https://drive.google.com/drive/folders/1Knb5xECKhTKK9vVSAutyHNOFClFaFf8o)
+- Report [link](https://github.com/Fool-Yang/AlphaSnake-Zero/blob/master/report.pdf)
+
 ## Demo
 
 ![7000 Iterations DQN Training](./app/gifs/gif-run-7000.gif)
