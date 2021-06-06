@@ -2,7 +2,7 @@
 
 # PSSCSCS
 
-A reinforcment learning [Battlesnake AI](http://battlesnake.com) written in
+A reinforcement learning [Battlesnake AI](http://battlesnake.com) written in
 Python by a **P**hysics, 2 **S**oftware Engineering, and 2 **C**omputer
 **S**cience undergrads.
 
